@@ -1,17 +1,16 @@
-import React from "react";
-import "../styles/background.css";
+import "./background.css";
 
 function Background() {
   return (
     <div>
       <div>
         <div>
-          <div class="grid-lines-container">
-            <div class="grid-lines"></div>
+          <div className="grid-lines-container">
+            <div className="grid-lines"></div>
           </div>
-          <div class="vignette"></div>
+          <div className="vignette"></div>
         </div>
-        <div class="centering-is-hard"></div>
+        <div className="centering-is-hard"></div>
       </div>
     </div>
   );
