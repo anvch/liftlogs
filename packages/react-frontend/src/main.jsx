@@ -1,7 +1,7 @@
 // src/main.jsx
 import React from "react";
 import ReactDOMClient from "react-dom/client";
-import {BrowserRouter as Router, Routes, Route} from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./home/Home";
 import Calendar from "./calendar/Calendar";
 import "./styles/global.css";
@@ -19,5 +19,5 @@ root.render(
       <Route path="/" element={<Home />} />
       <Route path="/calendar" element={<Calendar />} />
     </Routes>
-  </Router>
+  </Router>,
 );
