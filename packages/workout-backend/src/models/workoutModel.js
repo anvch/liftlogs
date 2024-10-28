@@ -1,5 +1,5 @@
-const dynamoDB = require('../config/dynamodb.js');
-const TABLE_NAME = 'Workouts';
+const dynamoDB = require("../config/dynamodb.js");
+const TABLE_NAME = "Workouts";
 
 const WorkoutModel = {
   async createWorkout(workout) {
@@ -12,10 +12,10 @@ const WorkoutModel = {
         exercises: workout.exercises,
         duration: workout.duration,
         date: workout.date,
-        createdAt: new Date().toISOString()
-      }
+        createdAt: new Date().toISOString(),
+      },
     };
-    
+
     await dynamoDB.put(params).promise();
     return params.Item;
   },
@@ -23,15 +23,15 @@ const WorkoutModel = {
   async getWorkoutsByUser(userId) {
     const params = {
       TableName: TABLE_NAME,
-      KeyConditionExpression: 'userId = :userId',
+      KeyConditionExpression: "userId = :userId",
       ExpressionAttributeValues: {
-        ':userId': userId
-      }
+        ":userId": userId,
+      },
     };
-    
+
     const result = await dynamoDB.query(params).promise();
     return result.Items;
-  }
+  },
 };
 
 module.exports = WorkoutModel;

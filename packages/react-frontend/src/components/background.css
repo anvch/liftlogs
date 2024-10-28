@@ -1,67 +1,68 @@
-
 /* container for applying a perspective */
 .grid-lines-container {
-    position: fixed;
-    top: auto;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    height: 70vh;
-    perspective: 45vh;
-    overflow: visible;
-    transform-style: preserve-3d;
-    overflow: hidden;
-    z-index: -5;
+  position: fixed;
+  top: auto;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70vh;
+  perspective: 45vh;
+  overflow: visible;
+  transform-style: preserve-3d;
+  overflow: hidden;
+  z-index: -5;
 }
 
 .vignette {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: -1;
-    background-color: transparent;
-    background-image: linear-gradient(180deg, var(--darkest-color) 5%, transparent);
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: -1;
+  background-color: transparent;
+  background-image: linear-gradient(
+    180deg,
+    var(--darkest-color) 5%,
+    transparent
+  );
 }
 
 .grid-lines {
-    position: fixed;
-    top: 0;
-    bottom: 0;
-    left: 0;
-    right: 0;
-    z-index: 0;
-    height: 200%;
-    width: 100%;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+  height: 200%;
+  width: 100%;
 
-
-    /* retro grid line effect. The repeating 1px wide
+  /* retro grid line effect. The repeating 1px wide
     green bands are overlayed on the background color of the
     container */
-    background:
-        repeating-linear-gradient(
-            to right,
-            rgba(111, 207, 151, 0.4),
-            rgba(111, 207, 151, 0.4) 1px,
-            transparent 1px,
-            transparent 30px
-        ),
-        repeating-linear-gradient(
-            rgba(111, 207, 151, 0.4),
-            rgba(111, 207, 151, 0.4) 1px,
-            transparent 1px,
-            transparent 30px
-        );
-    transform-origin: 100% 0 0;
-    animation: gridScrolling 60s linear infinite;
+  background: repeating-linear-gradient(
+      to right,
+      rgba(111, 207, 151, 0.4),
+      rgba(111, 207, 151, 0.4) 1px,
+      transparent 1px,
+      transparent 30px
+    ),
+    repeating-linear-gradient(
+      rgba(111, 207, 151, 0.4),
+      rgba(111, 207, 151, 0.4) 1px,
+      transparent 1px,
+      transparent 30px
+    );
+  transform-origin: 100% 0 0;
+  animation: gridScrolling 60s linear infinite;
 }
 
 @keyframes gridScrolling {
-    0% {
-      transform: rotateX(45deg) translateY(-50%);
-    }
-    100% {
-      transform: rotateX(45deg) translateY(0%);
-    }
+  0% {
+    transform: rotateX(45deg) translateY(-50%);
   }
+  100% {
+    transform: rotateX(45deg) translateY(0%);
+  }
+}

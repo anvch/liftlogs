@@ -9,11 +9,11 @@ export default [
       ecmaVersion: 2020,
       parserOptions: {
         ecmaVersion: "latest",
-        sourceType: "module"
-      }
+        sourceType: "module",
+      },
     },
     rules: {
-      ...js.configs.recommended.rules
-    }
-  }
+      ...js.configs.recommended.rules,
+    },
+  },
 ];
