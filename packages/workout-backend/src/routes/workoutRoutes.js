@@ -1,70 +1,92 @@
+// src/routes/workoutRoutes.js
 const express = require('express');
 const router = express.Router();
-const AWS = require('aws-sdk');
-const dynamoDB = new AWS.DynamoDB.DocumentClient();
+const WorkoutModel = require('../models/workoutModel');
 
 // Create a strength workout
-router.post('/workouts/strength', async (req, res) => {
-    try {
-        const workoutData = {
-            username: req.body.username,
-            workoutId: `${new Date().toISOString().split('T')[0]}#${Date.now()}`,
-            type: 'strength',
-            exercises: req.body.exercises,
-            notes: req.body.notes
-        };
+router.post('/strength', async (req, res) => {
+  try {
+    const workoutData = {
+      type: 'strength',
+      name: req.body.name,
+      sets: req.body.sets
+    };
 
-        await dynamoDB.put({
-            TableName: 'Workouts',
-            Item: workoutData
-        }).promise();
-
-        res.json(workoutData);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+    const workout = await WorkoutModel.createWorkout(req.body.username, workoutData);
+    res.json(workout);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Create a time-based workout
-router.post('/workouts/timebased', async (req, res) => {
-    try {
-        const workoutData = {
-            username: req.body.username,
-            workoutId: `${new Date().toISOString().split('T')[0]}#${Date.now()}`,
-            type: 'time-based',
-            activity: req.body.activity,
-            duration: req.body.duration,
-            distance: req.body.distance,
-            notes: req.body.notes
-        };
+router.post('/timebased', async (req, res) => {
+  try {
+    const workoutData = {
+      type: 'time-based',
+      name: req.body.name,
+      time: req.body.time,
+      distance: req.body.distance
+    };
 
-        await dynamoDB.put({
-            TableName: 'Workouts',
-            Item: workoutData
-        }).promise();
+    const workout = await WorkoutModel.createWorkout(req.body.username, workoutData);
+    res.json(workout);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-        res.json(workoutData);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
-    }
+// Add to calendar
+router.post('/calendar', async (req, res) => {
+  try {
+    const result = await WorkoutModel.addToCalendar(
+      req.body.username,
+      req.body.date,
+      req.body.exercises
+    );
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 // Get all workouts for a user
-router.get('/workouts/:username', async (req, res) => {
-    try {
-        const params = {
-            TableName: 'Workouts',
-            KeyConditionExpression: 'username = :username',
-            ExpressionAttributeValues: {
-                ':username': req.params.username
-            }
-        };
+router.get('/:username', async (req, res) => {
+  try {
+    const workouts = await WorkoutModel.getWorkouts(req.params.username);
+    res.json(workouts);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
 
-        const result = await dynamoDB.query(params).promise();
-        res.json(result.Items);
-    } catch (error) {
-        res.status(500).json({ error: error.message });
+// Get specific workout
+router.get('/:username/:workoutId', async (req, res) => {
+  try {
+    const workout = await WorkoutModel.getWorkout(
+      req.params.username,
+      req.params.workoutId
+    );
+    if (!workout) {
+      return res.status(404).json({ message: 'Workout not found' });
     }
+    res.json(workout);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// Get workouts by date
+router.get('/:username/date/:date', async (req, res) => {
+  try {
+    const workouts = await WorkoutModel.getWorkoutsByDate(
+      req.params.username,
+      req.params.date
+    );
+    res.json(workouts);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
 });
 
 module.exports = router;
