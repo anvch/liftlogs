@@ -1,5 +1,5 @@
-const dynamoDB = require('../config/dynamodb.js');
-const TABLE_NAME = 'Workouts';
+const dynamoDB = require("../config/dynamodb.js");
+const TABLE_NAME = "Workouts";
 
 const WorkoutModel = {
   // Create a new workout (works for both types)
