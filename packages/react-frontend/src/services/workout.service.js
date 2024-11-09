@@ -1,3 +1,4 @@
+import { ApiService } from "./api.service";
 export const WorkoutService = {
     async getWorkouts() {
         return ApiService.get('/api/workouts');
