@@ -1,2 +1,3 @@
 # liftlogs
-![Flow diagram for authentication](https://github.com/user-attachments/assets/f20e59ef-4a7c-4b2f-823b-5ded952d3455)
+![Flow diagram for authentication](https://github.com/user-attachments/assets/5e2d3014-2b85-4d59-8be3-f1467dd2a0bc)
+
