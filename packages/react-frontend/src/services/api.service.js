@@ -1,3 +1,4 @@
+import { AuthService } from "./auth.service";
 export const ApiService = {
     async fetch(url, options = {}) {
         const token = AuthService.getToken();
