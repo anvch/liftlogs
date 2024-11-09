@@ -15,5 +15,8 @@
   ],
   "devDependencies": {
     "prettier": "^3.3.3"
+  },
+  "dependencies": {
+    "react-calendar": "^5.1.0"
   }
 }
