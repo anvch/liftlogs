@@ -1,29 +1,34 @@
-// src/server.js
 const express = require('express');
-const cors = require('cors');
-const workoutRoutes = require('./routes/workoutRoutes');
+const { registerUser, loginUser, authenticateUser } = require('./models/authModel');
 
 const app = express();
 
-// Middlewares
-app.use(cors());
+// Middleware
 app.use(express.json());
 
-// Routes
-app.use('/api/workouts', workoutRoutes);
+// Auth routes (unprotected)
+app.post("/signup", registerUser);
+app.post("/login", loginUser);
 
-// Basic error handling
+// Protected route example from lab
+app.post("/users", authenticateUser, (req, res) => {
+  const userToAdd = req.body;
+  // In lab example, this just returns success
+  res.status(201).send(userToAdd);
+});
+
+// Error handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(500).json({ error: 'Something broke!' });
 });
 
-// 404 handling
-app.use((req, res) => {
-  res.status(404).json({ error: 'Route not found' });
-});
+// Only start server if not in test mode
+if (process.env.NODE_ENV !== 'test') {
+  const PORT = process.env.PORT || 3001;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
 
-const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+module.exports = app;
