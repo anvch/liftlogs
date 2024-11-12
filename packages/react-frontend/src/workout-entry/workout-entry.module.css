@@ -1,0 +1,63 @@
+/* WorkoutEntryPage.module.css */
+
+.container {
+    background-color: #333;
+    color: #fff;
+    padding: 20px;
+    max-width: 400px;
+    margin: auto;
+}
+
+.header {
+    margin-bottom: 10px;
+}
+
+.label {
+    display: block;
+    margin: 10px 0;
+}
+
+.select,
+.input {
+    display: block;
+    margin: 10px 0;
+    padding: 5px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.radioGroup {
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.button {
+    background-color: #d4c3d6;
+    color: #333;
+    margin: 10px 0;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+}
+
+.setList {
+    margin: 10px 0;
+    list-style: none;
+    padding: 0;
+}
+
+.setItem {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.removeButton {
+    background-color: #ff6961;
+    color: #fff;
+    border: none;
+    text-align: center;
+    cursor: pointer;
+    font-size: 0.6rem;
+}
