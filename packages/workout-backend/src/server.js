@@ -1,5 +1,9 @@
-const express = require('express');
-const { registerUser, loginUser, authenticateUser } = require('./models/authModel');
+const express = require("express");
+const {
+  registerUser,
+  loginUser,
+  authenticateUser,
+} = require("./models/authModel");
 
 const app = express();
 
@@ -20,11 +24,11 @@ app.post("/users", authenticateUser, (req, res) => {
 // Error handling
 app.use((err, req, res, next) => {
   console.error(err.stack);
-  res.status(500).json({ error: 'Something broke!' });
+  res.status(500).json({ error: "Something broke!" });
 });
 
 // Only start server if not in test mode
-if (process.env.NODE_ENV !== 'test') {
+if (process.env.NODE_ENV !== "test") {
   const PORT = process.env.PORT || 3001;
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

@@ -10,7 +10,9 @@
   },
   "jest": {
     "testEnvironment": "node",
-    "setupFiles": ["dotenv/config"]
+    "setupFiles": [
+      "dotenv/config"
+    ]
   },
   "dependencies": {
     "aws-sdk": "^2.1691.0",
