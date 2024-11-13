@@ -1,7 +1,12 @@
 import React, { useState } from "react";
 import styles from "./workout-entry.module.css";
 import Background from "../components/Background";
-
+/*
+  TODOs:
+  - submit button must be disabled unless weight or cardio information has been
+    entered
+  - 
+*/
 function WorkoutEntryPage() {
   const [preset, setPreset] = useState("");
   const [name, setName] = useState("");
