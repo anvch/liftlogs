@@ -1,0 +1,11 @@
+.my-workouts {
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  padding: 16px;
+  width: 50%;
+  margin: 10px;
+  background-color: #c7dbe6; /* Light blue background */
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1); /* Soft shadow */
+  display: grid;
+  place-items: center;
+}
