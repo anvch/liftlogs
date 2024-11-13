@@ -1,25 +1,25 @@
-const AuthModel = require('../models/authModel');
+const AuthModel = require("../models/authModel");
 
 const authenticateUser = async (req, res, next) => {
   try {
     const authHeader = req.headers.authorization;
-    if (!authHeader || !authHeader.startsWith('Bearer ')) {
-      return res.status(401).json({ error: 'No token provided' });
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "No token provided" });
     }
 
-    const token = authHeader.split(' ')[1];
+    const token = authHeader.split(" ")[1];
     const decoded = AuthModel.verifyToken(token);
-    
+
     // Add user info to request
     req.user = { username: decoded.username };
-    
+
     // Debug log
-    console.log('Authenticated user:', req.user);
-    
+    console.log("Authenticated user:", req.user);
+
     next();
   } catch (error) {
-    console.error('Authentication error:', error);
-    res.status(401).json({ error: 'Invalid token' });
+    console.error("Authentication error:", error);
+    res.status(401).json({ error: "Invalid token" });
   }
 };
 

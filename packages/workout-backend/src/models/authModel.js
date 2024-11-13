@@ -8,7 +8,7 @@ function generateAccessToken(username) {
   return new Promise((resolve, reject) => {
     jwt.sign(
       { username: username },
-      process.env.JWT_SECRET || 'your-secret-key',
+      process.env.JWT_SECRET || "your-secret-key",
       { expiresIn: "1d" },
       (error, token) => {
         if (error) {
@@ -16,7 +16,7 @@ function generateAccessToken(username) {
         } else {
           resolve(token);
         }
-      }
+      },
     );
   });
 }
@@ -76,7 +76,7 @@ function authenticateUser(req, res, next) {
   } else {
     jwt.verify(
       token,
-      process.env.JWT_SECRET || 'your-secret-key',
+      process.env.JWT_SECRET || "your-secret-key",
       (error, decoded) => {
         if (decoded) {
           next();
@@ -84,7 +84,7 @@ function authenticateUser(req, res, next) {
           console.log("JWT error:", error);
           res.status(401).end();
         }
-      }
+      },
     );
   }
 }
@@ -92,5 +92,5 @@ function authenticateUser(req, res, next) {
 module.exports = {
   registerUser,
   loginUser,
-  authenticateUser
+  authenticateUser,
 };
