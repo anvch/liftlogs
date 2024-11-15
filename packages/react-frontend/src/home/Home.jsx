@@ -7,6 +7,12 @@ function Home() {
   return (
     <div>
       <Background></Background>
+      <br></br>
+      <Link to="/bio">
+        <button>Bio</button>
+      </Link>
+      <br></br>
+      <br></br>
       <h1>Welcome, username!</h1>
       <Link to="/calendar">
         <Calendar></Calendar>
@@ -15,6 +21,7 @@ function Home() {
       <Link to="/addworkout">
         <button> + Add Workout</button>
       </Link>
+      <br></br>
       <MyWorkouts className="my-workouts"></MyWorkouts>
     </div>
   );

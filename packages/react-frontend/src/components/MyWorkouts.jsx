@@ -12,7 +12,7 @@ function MyWorkouts() {
   return (
     <div className="my-workouts">
       <h2>My Workouts</h2>
-      <Link to="/addworkout">
+      <Link to="/workout-entry">
         <button> + Add Workout</button>
       </Link>
       <WorkoutCard
