@@ -1,0 +1,26 @@
+.navbar {
+  text-align: right;
+  margin-right: 20px;
+}
+
+.name {
+  text-align: center;
+  margin: 10px 0;
+}
+
+.bio {
+  text-align: center;
+  margin: 10px 0;
+}
+
+.achievements {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.achievements > div {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+}

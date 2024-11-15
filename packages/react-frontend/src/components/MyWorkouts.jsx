@@ -10,16 +10,18 @@ function MyWorkouts() {
   };
 
   return (
-    <div className="my-workouts">
-      <h2>My Workouts</h2>
-      <Link to="/workout-entry">
-        <button> + Add Workout</button>
-      </Link>
-      <WorkoutCard
-        name={testWorkout.name}
-        type={testWorkout.type}
-        description={testWorkout.description}
-      />
+    <div className="parent">
+      <div className="my-workouts">
+        <h2>My Workouts</h2>
+        <Link to="/workout-entry">
+          <button> + Add Workout</button>
+        </Link>
+        <WorkoutCard
+          name={testWorkout.name}
+          type={testWorkout.type}
+          description={testWorkout.description}
+        />
+      </div>
     </div>
   );
 }

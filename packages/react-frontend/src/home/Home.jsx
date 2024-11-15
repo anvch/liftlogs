@@ -8,9 +8,11 @@ function Home() {
     <div>
       <Background></Background>
       <br></br>
-      <Link to="/bio">
-        <button>Bio</button>
-      </Link>
+      <div className="navbar">
+        <Link to="/profile">
+          <button>Profile</button>
+        </Link>
+      </div>
       <br></br>
       <br></br>
       <h1>Welcome, username!</h1>
@@ -18,9 +20,12 @@ function Home() {
         <Calendar></Calendar>
       </Link>
       <br></br>
-      <Link to="/addworkout">
-        <button> + Add Workout</button>
-      </Link>
+      <div className="navbar">
+        <Link to="/addworkout">
+          <button> + Add Workout</button>
+        </Link>
+      </div>
+      <br></br>
       <br></br>
       <MyWorkouts className="my-workouts"></MyWorkouts>
     </div>
