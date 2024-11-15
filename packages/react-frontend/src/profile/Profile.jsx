@@ -3,6 +3,11 @@ import MyWorkouts from "../components/MyWorkouts";
 import "./profile.css";
 
 function Profile() {
+  const testUser = {
+    name: "John Doe",
+    bio: "Description of John Doe",
+  };
+
   return (
     <div>
       <br />
@@ -13,8 +18,8 @@ function Profile() {
       </div>
       <br />
       <br />
-      <h1 className="name">John Doe</h1>
-      <h2 className="bio">Description of John Doe</h2>
+      <h1 className="name">{testUser.name}</h1>
+      <h2 className="bio">{testUser.bio}</h2>
       <div className="achievements">
         <div className="streak">
           <h3>Workout Streak</h3>
