@@ -3,9 +3,9 @@ import styles from "./workout-entry.module.css";
 import Background from "../components/Background";
 
 /* TODO:
-  - The submit button should be available if a preset is being used.
-  - If the submitted workout is identical to a preset, nothing should happen (for now).
-  - Eventually, this will log the workout in the user's calendar database.
+  - make preset creation optional rather than automatic
+  - option to remove presets
+  - grab presets ("workouts") from the database
 */
 
 function WorkoutEntryPage() {
