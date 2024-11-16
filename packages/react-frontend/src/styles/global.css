@@ -12,3 +12,7 @@
     --glow-color: #6a0dad;
     --low-contrast: #e0e0e0;
 }
+
+body {
+    background-color: var(--dark-color);
+}
