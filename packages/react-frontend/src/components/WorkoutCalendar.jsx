@@ -16,7 +16,7 @@ function WorkoutCalendar() {
     if (count > 20) return "#9d14ff";
     if (count > 10) return "#6e18a8";
     if (count > 5) return "#38035c";
-    return "#38035c";
+    return "#1b1b38";
   };
 
   const handleDateClick = (date) => {
