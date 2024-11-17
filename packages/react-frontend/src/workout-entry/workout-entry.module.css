@@ -46,6 +46,7 @@
     display: flex;
     gap: 10px;
 }
+/*
 .button {
     background-color: #d4c3d6;
     color: #333;
@@ -63,7 +64,7 @@
   background-color: #ccc;
   cursor: not-allowed;
 }
-
+*/
 .setList {
     margin: 10px 0;
     list-style: none;
