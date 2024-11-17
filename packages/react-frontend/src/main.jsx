@@ -6,6 +6,7 @@ import Home from "./home/Home";
 import Calendar from "./calendar/Calendar";
 import DateDetail from "./components/DateDetail";
 import "./styles/global.css";
+import WorkoutEntryPage from "./workout-entry/WorkoutEntryPage";
 
 const container = document.getElementById("root");
 
@@ -20,6 +21,7 @@ root.render(
       <Route path="/" element={<Home />} />
       <Route path="/calendar" element={<Calendar />} />
       <Route path="/calendar/:date" element={<DateDetail />} />
+      <Route path="/workout-entry" element={<WorkoutEntryPage/>} />
     </Routes>
   </Router>,
 );
