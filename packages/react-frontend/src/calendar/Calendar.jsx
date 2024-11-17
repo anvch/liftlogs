@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 
 import "react-calendar/dist/Calendar.css";
+import "./calendar.css";
 
 // type ValuePiece = Date | null;
 
@@ -10,6 +11,7 @@ import "react-calendar/dist/Calendar.css";
 
 function Calendar1() {
   const [value, onChange] = useState(new Date());
+  const navigate = useNavigate();
 
   // this function should be replaced with the logic we want to use to determine "green-ness"
   const getEventCount = (date) => date.getDate();
@@ -20,6 +22,11 @@ function Calendar1() {
     if (count > 10) return "green";
     if (count > 5) return "lightgreen";
     return "lightgray";
+  };
+
+  const handleDateClick = (date) => {
+    const formattedDate = date.toISOString().split("T")[0]; // Format to YYYY-MM-DD
+    navigate(`/calendar/${formattedDate}`);
   };
 
   return (
@@ -43,6 +50,8 @@ function Calendar1() {
           );
         }}
         onChange={onChange}
+        onClickDay={handleDateClick}
+        calendarType="gregory"  
         value={value}
       />
     </div>

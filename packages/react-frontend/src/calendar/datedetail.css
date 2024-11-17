@@ -1,0 +1,38 @@
+.homeButton {
+  margin-top: -50px;
+  margin-left: 320px;
+  margin-right: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 5px;
+  border: 1px solid #d0d0d0;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  color: #000;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  position: absolute;
+}
+
+.editButton{
+  margin-left: 330px;
+  margin-right: 330px;
+  margin-bottom: 10px;
+  padding: 10px;
+  background-color: #BFB1C1;
+  border-radius: 5px;
+  border: 1px solid #d0d0d0;
+  cursor: pointer;
+  display: inline-block;
+  text-align: center;
+  color: #000;
+  text-decoration: none;
+  font-size: 16px;
+  font-weight: bold;
+  transition: background-color 0.3s;
+  position: absolute; 
+}

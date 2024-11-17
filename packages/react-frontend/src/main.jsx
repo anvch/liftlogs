@@ -4,6 +4,7 @@ import ReactDOMClient from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./home/Home";
 import Calendar from "./calendar/Calendar";
+import DateDetail from "./calendar/DateDetail";
 import "./styles/global.css";
 
 const container = document.getElementById("root");
@@ -18,6 +19,7 @@ root.render(
       {/* Define routes here */}
       <Route path="/" element={<Home />} />
       <Route path="/calendar" element={<Calendar />} />
+      <Route path="/calendar/:date" element={<DateDetail />} />
     </Routes>
   </Router>,
 );
