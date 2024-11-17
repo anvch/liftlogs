@@ -7,7 +7,7 @@ import profileIcon from "../assets/profile.svg";
 
 function Home() {
   return (
-    <div>
+    <div className="container">
       <Background></Background>
       <br></br>
       <div className={styles.navbar}>
