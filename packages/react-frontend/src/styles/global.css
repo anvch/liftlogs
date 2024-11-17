@@ -13,6 +13,10 @@
     --low-contrast: #e0e0e0;
 }
 
+body {
+  background-color: var(--dark-color);
+}
+
 button:hover {
   background-color: var(--glow-color);
 }
