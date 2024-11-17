@@ -1,6 +1,6 @@
 import { useParams, useNavigate } from "react-router-dom";
-import WorkoutDetail from "../components/WorkoutDetail";
-import "./datedetail.css";
+import WorkoutDetail from "./WorkoutDetail";
+import styles from "./datedetail.module.css";
 
 function DateDetail() {
   const { date } = useParams();
@@ -35,11 +35,11 @@ function DateDetail() {
   return (
     <div>
       <h2>Workout: {date}</h2>
-      <button className="homeButton" onClick={handleHomeClick}>Home</button>
+      <button className={styles.homeButton} onClick={handleHomeClick}>Home</button>
       {tempToday.exercise.map((workout, index) => {
         return <WorkoutDetail key={index} workout={workout} />;
       })}
-      <button className="editButton">Edit</button>
+      <button className={styles.editButton}>Edit</button>
     </div>
   );
 }
