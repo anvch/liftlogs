@@ -1,19 +1,5 @@
 /* WorkoutEntryPage.module.css */
 
-.container {
-    background-color: var(--darkest-color);
-    color: var(--light-color);
-    max-width: 400px;
-    margin: auto;
-    padding: 20px;
-    background: linear-gradient( 45deg, var(--dark-color), var(--dark-color-brighter));
-    border-style: solid;
-    border-width: 1px;
-    border-color: var(--accent-color);
-    box-shadow: var(--glow-color) 0px 0px 12px;
-    border-radius: 5px;
-}
-
 .header {
     margin-bottom: 10px;
 }
@@ -46,25 +32,7 @@
     display: flex;
     gap: 10px;
 }
-/*
-.button {
-    background-color: #d4c3d6;
-    color: #333;
-    margin: 10px 0;
-    padding: 5px 10px;
-    border-style: solid;
-    border-width: 1px;
-    border-color: var(--accent-color);
-    box-shadow: var(--glow-color) 0px 0px 6px;
-    border-radius: 5px;
-    cursor: pointer;
-}
 
-.button:disabled {
-  background-color: #ccc;
-  cursor: not-allowed;
-}
-*/
 .setList {
     margin: 10px 0;
     list-style: none;

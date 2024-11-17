@@ -284,7 +284,7 @@ function WorkoutEntryPage() {
   return (
     <div className="wrapper">
       <Background />
-      <div className={styles.container}>
+      <div className="container">
         <h2 className={styles.header}>Log Workout</h2>
         {renderPresetSelector()}
         <hr />
