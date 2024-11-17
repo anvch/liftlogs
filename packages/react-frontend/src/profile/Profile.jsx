@@ -1,6 +1,8 @@
 import { Link } from "react-router-dom";
 import MyWorkouts from "../components/MyWorkouts";
-import "./profile.css";
+import homeIcon from "../assets/home.svg";
+import styles from "./profile.module.css";
+import Background from "../components/Background";
 
 function Profile() {
   const testUser = {
@@ -10,28 +12,29 @@ function Profile() {
 
   return (
     <div>
+      <Background />
       <br />
       <div className="navbar">
         <Link to="/">
-          <button className="navbutton">Home</button>
+          <img className={styles.homeicon} src={homeIcon} alt="Home" />
         </Link>
       </div>
       <br />
       <br />
-      <h1 className="name">{testUser.name}</h1>
-      <h2 className="bio">{testUser.bio}</h2>
-      <div className="achievements">
-        <div className="streak">
+      <h1 className={styles.name}>{testUser.name}</h1>
+      <h2 className={styles.bio}>{testUser.bio}</h2>
+      <div className={styles.achievements}>
+        <div className={styles.streak}>
           <h3>Workout Streak</h3>
           <p>3</p>
         </div>
-        <div className="monthlyWorkouts">
+        <div className={styles.monthlyWorkouts}>
           <h3>Workouts</h3>
           <p>3</p>
           <h3>This Month</h3>
         </div>
       </div>
-      <MyWorkouts className="my-workouts"></MyWorkouts>
+      <MyWorkouts className={styles.myworkouts}></MyWorkouts>
     </div>
   );
 }

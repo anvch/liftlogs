@@ -1,0 +1,6 @@
+.myworkouts {
+  width: 100%;
+  margin: 10px;
+  display: grid;
+  place-items: center;
+}

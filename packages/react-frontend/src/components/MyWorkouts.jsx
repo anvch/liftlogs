@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import WorkoutCard from "../components/WorkoutCard";
-import "./MyWorkouts.css";
+import styles from "./my-workouts.module.css";
 
 function MyWorkouts() {
   const testWorkout = {
@@ -10,9 +10,9 @@ function MyWorkouts() {
   };
 
   return (
-    <div className="parent">
-      <div className="my-workouts">
-        <h2>My Workouts</h2>
+    <div className="container">
+      <div className={styles.myworkouts}>
+        <h2 className>My Workouts</h2>
         <Link to="/workout-entry">
           <button> + Add Workout</button>
         </Link>
