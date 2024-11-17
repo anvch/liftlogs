@@ -38,3 +38,7 @@
   background-color: #0c0c18 !important; /* Dark background */
   border-radius: 5px;
 }
+
+:global(.react-calendar__tile--now) {
+  background-color: #0c0c18 !important; /* Dark background for the current date */
+}
