@@ -12,3 +12,20 @@
     --glow-color: #6a0dad;
     --low-contrast: #e0e0e0;
 }
+
+button:hover {
+  background-color: var(--glow-color);
+}
+
+button:active {
+  transform: scale(0.98);
+}
+
+button:disabled {
+  background-color: #ababab;
+  box-shadow: none;
+  border: inset;
+  border-width: 1px;
+  font-size: 0.8rem;
+  cursor: not-allowed;
+}
