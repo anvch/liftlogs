@@ -1,16 +1,16 @@
-@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap");
 
 :root {
-    font-family: Inter, sans-serif;
-    --dark-color: #141428;
-    --darkest-color: #0c0c18;
-    --dark-color-brighter: #1b1b38;
-    --light-color: #e0e0e0;
-    --light-color-darker: #b3b3b3;
-    /*--accent-color: #3b0b78;*/
-    --accent-color: #9d14ff;
-    --glow-color: #6a0dad;
-    --low-contrast: #e0e0e0;
+  font-family: Inter, sans-serif;
+  --dark-color: #141428;
+  --darkest-color: #0c0c18;
+  --dark-color-brighter: #1b1b38;
+  --light-color: #e0e0e0;
+  --light-color-darker: #b3b3b3;
+  /*--accent-color: #3b0b78;*/
+  --accent-color: #9d14ff;
+  --glow-color: #6a0dad;
+  --low-contrast: #e0e0e0;
 }
 
 button:hover {
@@ -31,15 +31,19 @@ button:disabled {
 }
 
 .container {
-    background-color: var(--darkest-color);
-    color: var(--light-color);
-    max-width: 400px;
-    margin: auto;
-    padding: 20px;
-    background: linear-gradient( 45deg, var(--dark-color), var(--dark-color-brighter));
-    border-style: solid;
-    border-width: 1px;
-    border-color: var(--accent-color);
-    box-shadow: var(--glow-color) 0px 0px 12px;
-    border-radius: 5px;
+  background-color: var(--darkest-color);
+  color: var(--light-color);
+  max-width: 400px;
+  margin: auto;
+  padding: 20px;
+  background: linear-gradient(
+    45deg,
+    var(--dark-color),
+    var(--dark-color-brighter)
+  );
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--accent-color);
+  box-shadow: var(--glow-color) 0px 0px 12px;
+  border-radius: 5px;
 }
