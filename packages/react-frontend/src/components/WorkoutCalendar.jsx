@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import styles from "./WorkoutCalendar.module.css";
 
 function WorkoutCalendar() {
   const [value, onChange] = useState(new Date());
@@ -12,10 +13,10 @@ function WorkoutCalendar() {
 
   // this function should have various shades of green based on the count
   const getColor = (count) => {
-    if (count > 20) return "darkgreen";
-    if (count > 10) return "green";
-    if (count > 5) return "lightgreen";
-    return "lightgray";
+    if (count > 20) return "#9d14ff";
+    if (count > 10) return "#6e18a8";
+    if (count > 5) return "#38035c";
+    return "#38035c";
   };
 
   const handleDateClick = (date) => {
@@ -25,6 +26,7 @@ function WorkoutCalendar() {
   return (
     <div>
       <Calendar
+        className={styles.calendar}
         tileContent={({ date }) => {
           const count = getEventCount(date);
           const color = getColor(count);
