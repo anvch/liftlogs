@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./home/Home";
 import Calendar from "./calendar/Calendar";
 import "./styles/global.css";
+import WorkoutEntryPage from "./workout-entry/WorkoutEntryPage";
 import Profile from "./profile/Profile";
 
 const container = document.getElementById("root");
@@ -19,7 +20,6 @@ root.render(
       {/* Define routes here */}
       <Route path="/" element={<Home />} />
       <Route path="/calendar" element={<Calendar />} />
-      <Route path="/profile" element={<Profile />} />
     </Routes>
   </Router>,
 );
