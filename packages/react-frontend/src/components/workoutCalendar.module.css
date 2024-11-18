@@ -5,6 +5,7 @@
     var(--dark-color-brighter)
   );
   border: 2px solid #9d14ff;
+  width: 100%;
 }
 
 :global(.react-calendar__tile) {
