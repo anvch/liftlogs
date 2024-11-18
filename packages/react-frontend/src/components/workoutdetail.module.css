@@ -1,6 +1,15 @@
-.workout{
-  background-color: #C7DBE6;
-  text-align: center;
-  margin: 10px 30px;
-  padding: 10px;
+.workout {
+  margin: 10px 40px;
+  padding: 20px;
+  background: linear-gradient(
+    45deg,
+    var(--dark-color),
+    var(--dark-color-brighter)
+  );
+  color: white;
+  border-style: solid;
+  border-width: 1px;
+  border-color: var(--accent-color);
+  box-shadow: var(--glow-color) 0px 0px 12px;
+  border-radius: 5px;
 }

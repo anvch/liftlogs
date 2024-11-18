@@ -34,12 +34,17 @@ function DateDetail() {
 
   return (
     <div>
-      <h2>Workout: {date}</h2>
-      <button className={styles.homeButton} onClick={handleHomeClick}>Home</button>
+      <h2 className={styles.title}>Workout: {date}</h2>
+      <button
+        className={`container ${styles.homeButton}`}
+        onClick={handleHomeClick}
+      >
+        Home
+      </button>
       {tempToday.exercise.map((workout, index) => {
         return <WorkoutDetail key={index} workout={workout} />;
       })}
-      <button className={styles.editButton}>Edit</button>
+      <button className={`container ${styles.editButton}`}>Edit</button>
     </div>
   );
 }

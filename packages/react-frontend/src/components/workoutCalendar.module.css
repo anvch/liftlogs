@@ -1,5 +1,9 @@
 .calendar {
-  background-color: #1b1b38;
+  background: linear-gradient(
+    45deg,
+    var(--dark-color),
+    var(--dark-color-brighter)
+  );
   border: 2px solid #9d14ff;
 }
 
