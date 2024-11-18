@@ -11,7 +11,7 @@ function Profile() {
   };
 
   return (
-    <div>
+    <div className="container">
       <Background />
       <br />
       <div className="navbar">
