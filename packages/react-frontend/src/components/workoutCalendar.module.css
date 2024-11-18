@@ -1,0 +1,49 @@
+.calendar {
+  background: linear-gradient(
+    45deg,
+    var(--dark-color),
+    var(--dark-color-brighter)
+  );
+  border: 2px solid #9d14ff;
+  width: 100%;
+}
+
+:global(.react-calendar__tile) {
+  color: #ffffff; /* White text */
+}
+
+:global(.react-calendar__navigation__arrow) {
+  color: #ffffff; /* White text for navigation arrows */
+}
+
+:global(.react-calendar__navigation__label) {
+  color: #ffffff; /* White text for month and year */
+}
+
+:global(.react-calendar__month-view__weekdays__weekday) {
+  color: #ffffff; /* White text for weekday labels */
+}
+
+:global(.react-calendar__navigation__arrow:hover) {
+  background-color: #0c0c18 !important;
+  border-radius: 5px;
+}
+
+:global(.react-calendar__navigation__label:hover) {
+  background-color: #0c0c18 !important;
+  border-radius: 5px;
+}
+
+:global(.react-calendar__month-view__weekdays__weekday:hover) {
+  background-color: #0c0c18 !important;
+  border-radius: 5px;
+}
+
+:global(.react-calendar__tile:hover) {
+  background-color: #0c0c18 !important; /* Dark background */
+  border-radius: 5px;
+}
+
+:global(.react-calendar__tile--now) {
+  background-color: #0c0c18 !important; /* Dark background for the current date */
+}

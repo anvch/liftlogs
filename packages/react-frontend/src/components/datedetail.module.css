@@ -1,0 +1,35 @@
+.title {
+  color: white;
+  padding: 10px;
+  margin-left: 20px;
+}
+
+.homeButton {
+  position: absolute;
+  right: 20px;
+  top: 20px;
+}
+
+.editButton {
+  position: absolute;
+  right: 48px;
+}
+
+.homeicon {
+  width: 24px; /* Adjust size as needed */
+  height: 24px; /* Match the width for consistency */
+  cursor: pointer; /* Makes it feel like a button */
+  float: right; /* Aligns the icon to the right */
+  margin: 0 16px 0 0; /* Adds space around the icon, especially on the right */
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease; /* Optional: hover effect */
+  position: absolute;
+  right: 20px;
+  top: 30px;
+}
+
+.homeicon:hover {
+  transform: scale(1.1); /* Slight zoom on hover */
+  opacity: 0.8; /* Slight transparency for a dynamic effect */
+}
