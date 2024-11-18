@@ -19,8 +19,8 @@ root.render(
   <Router>
     <Routes>
       {/* Define routes here */}
+      <Route path="/" element={<LoginPage />} />
       <Route path="/login" element={<LoginPage />} />
-      <Route path="/" element={<Home />} />
       <Route path="/home" element={<Home />} />
       <Route path="/calendar" element={<Calendar />} />
       <Route path="/workout-entry" element={<WorkoutEntryPage />} />
