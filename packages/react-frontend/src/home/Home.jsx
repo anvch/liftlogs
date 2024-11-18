@@ -1,14 +1,35 @@
-import React from "react";
 import { Link } from "react-router-dom";
 import Background from "../components/Background";
+import Calendar from "../calendar/Calendar";
+import MyWorkouts from "../components/MyWorkouts";
+import styles from "./home.module.css";
+import profileIcon from "../assets/profile.svg";
 
 function Home() {
   return (
-    <div>
+    <div className="container">
       <Background></Background>
-      <h1>Hello, React!</h1>
-      <p>Click the link to view calendar:</p>
-      <Link to="/calendar">Go to Calendar</Link>
+      <br></br>
+      <div className={styles.navbar}>
+        <Link to="/profile">
+          <img className={styles.profileicon} src={profileIcon} alt="Profile" />
+        </Link>
+      </div>
+      <br></br>
+      <br></br>
+      <h1 className={styles.title}>Welcome, username!</h1>
+      <Link to="/calendar">
+        <Calendar></Calendar>
+      </Link>
+      <br></br>
+      <div className={styles.navbar}>
+        <Link to="/addworkout">
+          <button> + Add Workout</button>
+        </Link>
+      </div>
+      <br></br>
+      <br></br>
+      <MyWorkouts></MyWorkouts>
     </div>
   );
 }

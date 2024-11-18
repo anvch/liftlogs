@@ -7,6 +7,8 @@ import Calendar from "./calendar/Calendar";
 import DateDetail from "./components/DateDetail";
 import "./styles/global.css";
 import WorkoutEntryPage from "./workout-entry/WorkoutEntryPage";
+import Profile from "./profile/Profile";
+import LoginPage from "./login/LoginPage";
 
 const container = document.getElementById("root");
 
@@ -18,10 +20,13 @@ root.render(
   <Router>
     <Routes>
       {/* Define routes here */}
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/" element={<Home />} />
+      <Route path="/home" element={<Home />} />
       <Route path="/calendar" element={<Calendar />} />
       <Route path="/calendar/:date" element={<DateDetail />} />
-      <Route path="/workout-entry" element={<WorkoutEntryPage/>} />
+      <Route path="/workout-entry" element={<WorkoutEntryPage />} />
+      <Route path="/profile" element={<Profile />} />
     </Routes>
   </Router>,
 );

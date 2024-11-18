@@ -1,0 +1,45 @@
+.navbar {
+  text-align: right;
+  margin-right: 20px;
+}
+
+.name {
+  color: var(--light-color);
+  text-align: center;
+  margin: 10px 0;
+}
+
+.bio {
+  color: var(--light-color);
+  text-align: center;
+  margin: 10px 0;
+}
+
+.achievements {
+  color: var(--light-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.achievements > div {
+  flex: 1;
+  text-align: center;
+  padding: 10px;
+}
+
+.homeicon {
+  width: 24px; /* Adjust size as needed */
+  height: 24px; /* Match the width for consistency */
+  cursor: pointer; /* Makes it feel like a button */
+  float: right; /* Aligns the icon to the right */
+  margin: 0 16px 0 0; /* Adds space around the icon, especially on the right */
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease; /* Optional: hover effect */
+}
+
+.homeicon:hover {
+  transform: scale(1.1); /* Slight zoom on hover */
+  opacity: 0.8; /* Slight transparency for a dynamic effect */
+}

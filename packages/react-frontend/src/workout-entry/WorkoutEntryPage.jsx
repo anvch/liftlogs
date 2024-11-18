@@ -1,11 +1,14 @@
 import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
 import styles from "./workout-entry.module.css";
 import Background from "../components/Background";
+import HomeIcon from "../assets/home.svg";
 
 /* TODO:
-  - make preset creation optional rather than automatic
-  - option to remove presets
-  - grab presets ("workouts") from the database
+  - make preset creation optional rather than automatic (checkbox style)
+  - nameless workouts should not be made into presets and should disable the 
+  create preset checkbox.
+  - option to remove a preset in the preset details page
 */
 
 function WorkoutEntryPage() {
@@ -19,6 +22,8 @@ function WorkoutEntryPage() {
   const [time, setTime] = useState("");
   const [presets, setPresets] = useState([]);
   const [isEditing, setIsEditing] = useState(true);
+  const [createPreset, setCreatePreset] = useState(false);
+
 
   // Load presets from localStorage on component mount
   useEffect(() => {
@@ -40,7 +45,7 @@ function WorkoutEntryPage() {
   };
 
   const handleSubmit = () => {
-    const newPreset = {
+    const newWorkout = {
       name: name || "Unnamed Workout",
       workoutType,
       sets,
@@ -48,29 +53,22 @@ function WorkoutEntryPage() {
       time,
     };
 
-    const existingIndex = presets.findIndex((p) => p.name === newPreset.name);
-
-    // Check if the submitted workout is identical to an existing preset
-    if (
-      existingIndex !== -1 &&
-      JSON.stringify(presets[existingIndex]) === JSON.stringify(newPreset)
-    ) {
-      console.log(
-        "Workout is identical to an existing preset. Nothing happens.",
+    if (createPreset && name) {
+      const existingIndex = presets.findIndex(
+        (p) => p.name === newWorkout.name,
       );
-      return;
-    }
 
-    if (existingIndex !== -1) {
-      if (
-        window.confirm("A preset with this name already exists. Overwrite?")
-      ) {
-        const updatedPresets = [...presets];
-        updatedPresets[existingIndex] = newPreset;
-        setPresets(updatedPresets);
+      if (existingIndex !== -1) {
+        if (
+          window.confirm("A preset with this name already exists. Overwrite?")
+        ) {
+          const updatedPresets = [...presets];
+          updatedPresets[existingIndex] = newWorkout;
+          setPresets(updatedPresets);
+        }
+      } else {
+        setPresets([...presets, newWorkout]);
       }
-    } else {
-      setPresets([...presets, newPreset]);
     }
 
     resetForm();
@@ -91,6 +89,14 @@ function WorkoutEntryPage() {
   const handleRemoveSet = (index) => {
     const updatedSets = sets.filter((_, i) => i !== index);
     setSets(updatedSets);
+  };
+
+  const handleRemovePreset = (name) => {
+    if (window.confirm("Are you sure you want to delete this preset?")) {
+      setPresets(presets.filter((preset) => preset.name !== name));
+      setPreset("");
+      setIsEditing(true);
+    }
   };
 
   const renderPresetDetails = () => {
@@ -122,6 +128,9 @@ function WorkoutEntryPage() {
           </p>
         )}
         <div className={styles["buttons-container"]}>
+          <button onClick={handleSubmit} className={styles.button}>
+            Submit
+          </button>
           <button
             onClick={() => {
               setIsEditing(true);
@@ -135,9 +144,11 @@ function WorkoutEntryPage() {
           >
             Edit
           </button>
-          {/* Add the submit button here */}
-          <button onClick={handleSubmit} className={styles.button}>
-            Submit
+          <button
+            onClick={() => handleRemovePreset(selectedPreset.name)}
+            className={`${styles.button} ${styles.removeButton}`}
+          >
+            Delete
           </button>
         </div>
       </div>
@@ -229,14 +240,18 @@ function WorkoutEntryPage() {
         </button>
         <ul className={styles.setList}>
           {sets.map((set, index) => (
-            <li key={index} className={styles.setItem}>
-              Reps: {set.reps}, Weight: {set.weight}
-              <button
-                onClick={() => handleRemoveSet(index)}
-                className={styles.removeButton}
-              >
-                X
-              </button>
+            <li key={index} className={styles.listItem}>
+              <div className={styles.setItem}>
+                <div>
+                  Reps: {set.reps}, Weight: {set.weight}
+                </div>
+                <button
+                  onClick={() => handleRemoveSet(index)}
+                  className={styles.removeButton}
+                >
+                  X
+                </button>
+              </div>
             </li>
           ))}
         </ul>
@@ -281,10 +296,21 @@ function WorkoutEntryPage() {
     );
   };
 
+  // TODO: add a button on the top right of the container to return home
+  // use ../assets/home.svg as the button's picture
   return (
     <div className="wrapper">
       <Background />
       <div className="container">
+        <div className={styles.topBar}>
+          <Link to="/">
+            <img
+              src={HomeIcon}
+              alt="Home"
+              className={styles.homeIcon}
+            />
+          </Link>
+        </div>
         <h2 className={styles.header}>Log Workout</h2>
         {renderPresetSelector()}
         <hr />
@@ -298,6 +324,15 @@ function WorkoutEntryPage() {
               onChange={(e) => setName(e.target.value)}
               className={styles.input}
             />
+            <label className={styles.checkboxContainer}>
+              <input
+                type="checkbox"
+                checked={createPreset}
+                onChange={(e) => setCreatePreset(e.target.checked)}
+                disabled={!name}
+              />
+              Save as Preset
+            </label>
             {renderWorkoutTypeSelector()}
             {workoutType === "Weights" && renderWeightsInput()}
             {workoutType === "Cardio" && renderCardioInput()}
