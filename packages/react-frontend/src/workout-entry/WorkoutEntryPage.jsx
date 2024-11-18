@@ -107,7 +107,7 @@ function WorkoutEntryPage() {
     return (
       <div>
         <h3 className={styles.header}>Preset Details</h3>
-        <p>
+        <p data-testid="preset-name">
           <strong>Name:</strong> {selectedPreset.name}
         </p>
         <p>
@@ -157,19 +157,20 @@ function WorkoutEntryPage() {
 
   const renderPresetSelector = () => (
     <div>
-      <label className={styles.label}>Choose Preset:</label>
+      <label className={styles.label} htmlFor="preset-selector">
+        Choose Preset:
+      </label>
       <select
+        id="preset-selector"
         value={preset}
         onChange={(e) => {
           const selectedValue = e.target.value;
           setPreset(selectedValue);
 
           if (selectedValue === "") {
-            // If "No Preset" is selected, switch back to "Add New" mode
             setIsEditing(true);
             resetForm();
           } else {
-            // If a preset is selected, show its details
             setIsEditing(false);
           }
         }}
@@ -187,10 +188,11 @@ function WorkoutEntryPage() {
 
   const renderWorkoutTypeSelector = () => (
     <div>
-      <label className={styles.label}>Type:</label>
-      <div className={styles.radioGroup}>
-        <label>
+      <label className={styles.label} htmlFor="radioGroup">Type:</label>
+      <div id="radioGroup" className={styles.radioGroup}>
+        <label htmlFor="weights-radio">
           <input
+            id="weights-radio"
             type="radio"
             value="Weights"
             checked={workoutType === "Weights"}
@@ -198,8 +200,9 @@ function WorkoutEntryPage() {
           />
           Weights
         </label>
-        <label>
+        <label htmlFor="cardio-radio">
           <input
+            id="cardio-radio"
             type="radio"
             value="Cardio"
             checked={workoutType === "Cardio"}
@@ -217,15 +220,21 @@ function WorkoutEntryPage() {
     return (
       <div>
         <h4>Sets</h4>
-        <label className={styles.label}>Reps:</label>
+        <label className={styles.label} htmlFor="reps-input">
+          Reps:
+        </label>
         <input
+          id="reps-input"
           type="number"
           value={reps}
           onChange={(e) => setReps(e.target.value)}
           className={styles.input}
         />
-        <label className={styles.label}>Weight:</label>
+        <label className={styles.label} htmlFor="weight-input">
+          Weight:
+        </label>
         <input
+          id="weight-input"
           type="number"
           value={weight}
           onChange={(e) => setWeight(e.target.value)}
@@ -261,15 +270,21 @@ function WorkoutEntryPage() {
 
   const renderCardioInput = () => (
     <div>
-      <label className={styles.label}>Distance:</label>
+      <label className={styles.label} htmlFor="distance-input">
+        Distance:
+      </label>
       <input
+        id="distance-input"
         type="number"
         value={distance}
         onChange={(e) => setDistance(e.target.value)}
         className={styles.input}
       />
-      <label className={styles.label}>Time:</label>
+      <label className={styles.label} htmlFor="time-input">
+        Time:
+      </label>
       <input
+        id="time-input"
         type="number"
         value={time}
         onChange={(e) => setTime(e.target.value)}
@@ -317,15 +332,17 @@ function WorkoutEntryPage() {
         {isEditing ? (
           <div>
             <h3 className={styles.header}>Add New</h3>
-            <label className={styles.label}>Name:</label>
+            <label htmlFor="nameInput" className={styles.label}>Name:</label>
             <input
+              id="nameInput"
               type="text"
               value={name}
               onChange={(e) => setName(e.target.value)}
               className={styles.input}
             />
-            <label className={styles.checkboxContainer}>
+            <label htmlFor="presetCheckbox" className={styles.checkboxContainer}>
               <input
+                id="presetCheckbox"
                 type="checkbox"
                 checked={createPreset}
                 onChange={(e) => setCreatePreset(e.target.checked)}

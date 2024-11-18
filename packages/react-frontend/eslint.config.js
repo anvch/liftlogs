@@ -35,4 +35,17 @@ export default [
       ],
     },
   },
+  {
+    // Add Jest-specific configuration
+    files: ["**/*.test.{js,jsx}"], // Only apply to test files
+    languageOptions: {
+      globals: { ...globals.jest }, // Include Jest globals
+    },
+    plugins: {
+      jest,
+    },
+    rules: {
+      ...jest.configs.recommended.rules, // Add Jest recommended rules
+    },
+  },
 ];
