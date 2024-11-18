@@ -1,5 +1,7 @@
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import WorkoutDetail from "./WorkoutDetail";
+import Background from "./Background";
+import homeIcon from "../assets/home.svg";
 import styles from "./datedetail.module.css";
 
 function DateDetail() {
@@ -29,18 +31,16 @@ function DateDetail() {
   };
 
   const handleHomeClick = () => {
-    navigate(`/calendar`);
+    navigate(`/`);
   };
 
   return (
     <div>
+      <Background />
       <h2 className={styles.title}>Workout: {date}</h2>
-      <button
-        className={`container ${styles.homeButton}`}
-        onClick={handleHomeClick}
-      >
-        Home
-      </button>
+      <Link to="/">
+        <img className={styles.homeicon} src={homeIcon} alt="Home" />
+      </Link>
       {tempToday.exercise.map((workout, index) => {
         return <WorkoutDetail key={index} workout={workout} />;
       })}

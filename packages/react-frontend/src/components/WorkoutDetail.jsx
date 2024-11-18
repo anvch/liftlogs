@@ -4,9 +4,8 @@ import styles from "./workoutdetail.module.css";
 const WorkoutDetail = ({ key, workout }) => {
   return (
     <div className={styles.workout}>
-      <h3>Workout Detail</h3>
-      <p>Name: {workout.name}</p>
-      <p>Type: {workout.workoutType}</p>
+      <h3>{workout.name}</h3>
+      <p>Type: {workout.workoutType === "weights" ? "Weights" : "Cardio"}</p>
       {workout.workoutType === "weights" ? (
         <div>
           <p>
