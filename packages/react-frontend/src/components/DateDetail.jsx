@@ -31,14 +31,14 @@ function DateDetail() {
   };
 
   const handleHomeClick = () => {
-    navigate(`/`);
+    navigate(`/home`);
   };
 
   return (
     <div>
       <Background />
       <h2 className={styles.title}>Workout: {date}</h2>
-      <Link to="/">
+      <Link to="/home">
         <img className={styles.homeicon} src={homeIcon} alt="Home" />
       </Link>
       {tempToday.exercise.map((workout, index) => {

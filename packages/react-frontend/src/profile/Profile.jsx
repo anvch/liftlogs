@@ -15,7 +15,7 @@ function Profile() {
       <Background />
       <br />
       <div className="navbar">
-        <Link to="/">
+        <Link to="/home">
           <img className={styles.homeicon} src={homeIcon} alt="Home" />
         </Link>
       </div>
