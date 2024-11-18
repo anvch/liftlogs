@@ -318,7 +318,7 @@ function WorkoutEntryPage() {
       <Background />
       <div className="container">
         <div className={styles.topBar}>
-          <Link to="/">
+          <Link to="/home">
             <img
               src={HomeIcon}
               alt="Home"
