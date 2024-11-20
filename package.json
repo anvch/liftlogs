@@ -7,7 +7,8 @@
     "test": "npm run test --workspaces",
     "start": "npm run dev --prefix packages/react-frontend",
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
-    "start:backend": "node packages/workout-backend/src/server.js"
+    "start:backend": "node packages/workout-backend/src/server.js",
+    "lint": "npx eslint . && npx prettier --check ."
   },
   "author": "",
   "license": "ISC",
