@@ -1,7 +1,9 @@
 export const AuthService = {
   async login(username, pwd) {
+    const AZURE_BASE_URL =
+      "https://sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net/";
     try {
-      const response = await fetch("http://localhost:3001/login", {
+      const response = await fetch(`${AZURE_BASE_URL}login`, {
         // Full backend URL
         method: "POST",
         headers: {
@@ -34,7 +36,7 @@ export const AuthService = {
 
   async register(username, pwd) {
     try {
-      const response = await fetch("http://localhost:3001/signup", {
+      const response = await fetch(`${AZURE_BASE_URL}signup`, {
         // Full backend URL
         method: "POST",
         headers: {
