@@ -29,5 +29,5 @@ jobs:
       - run: npm run -w workout-backend lint
       - run: npm run -w react-frontend lint
       - run: npm run -w react-frontend build
-    # - run: npm run build --if-present
-    # - run: npm test
+      - run: npm run build --if-present
+      - run: npm test
