@@ -1,19 +1,36 @@
-// packages/express-backend/eslint.config.js
-import js from "@eslint/js";
+import globals from "globals";
+import pluginJs from "@eslint/js";
+import pluginReact from "eslint-plugin-react";
 
+/** @type {import('eslint').Linter.Config[]} */
 export default [
-  { ignores: ["dist"] },
   {
-    files: ["**/*.{js}"],
+    files: ["**/*.{js,mjs,cjs,jsx}"],
     languageOptions: {
-      ecmaVersion: 2020,
-      parserOptions: {
-        ecmaVersion: "latest",
-        sourceType: "module",
-      },
-    },
-    rules: {
-      ...js.configs.recommended.rules,
-    },
+      globals: {
+        ...globals.browser,
+        ...globals.node
+      }
+    }
   },
+  // Special config for test files
+  {
+    files: ["**/*.test.js", "**/*.spec.js"],
+    languageOptions: {
+      globals: {
+        ...globals.jest  // Adds jest globals like describe, it, expect
+      }
+    }
+  },
+  {
+    rules: {
+      // Allow unused parameters (like 'next' in Express middleware)
+      'no-unused-vars': ['error', { 
+        'argsIgnorePattern': '^next$',
+        'varsIgnorePattern': '^_'
+      }]
+    }
+  },
+  pluginJs.configs.recommended,
+  pluginReact.configs.flat.recommended,
 ];
