@@ -6,7 +6,8 @@
     "start": "node src/server.js",
     "test": "jest --detectOpenHandles",
     "test:watch": "jest --watch",
-    "dev": "nodemon src/server.js"
+    "dev": "nodemon src/server.js",
+    "lint": "npx prettier --check ."
   },
   "jest": {
     "testEnvironment": "node",

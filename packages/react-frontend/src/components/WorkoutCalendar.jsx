@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import styles from "./WorkoutCalendar.module.css";
+import styles from "./workoutCalendar.module.css";
 
 function WorkoutCalendar() {
   const [value, onChange] = useState(new Date());

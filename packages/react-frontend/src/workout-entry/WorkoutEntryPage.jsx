@@ -24,7 +24,6 @@ function WorkoutEntryPage() {
   const [isEditing, setIsEditing] = useState(true);
   const [createPreset, setCreatePreset] = useState(false);
 
-
   // Load presets from localStorage on component mount
   useEffect(() => {
     const savedPresets = JSON.parse(localStorage.getItem("presets")) || [];
@@ -188,7 +187,9 @@ function WorkoutEntryPage() {
 
   const renderWorkoutTypeSelector = () => (
     <div>
-      <label className={styles.label} htmlFor="radioGroup">Type:</label>
+      <label className={styles.label} htmlFor="radioGroup">
+        Type:
+      </label>
       <div id="radioGroup" className={styles.radioGroup}>
         <label htmlFor="weights-radio">
           <input
@@ -319,11 +320,7 @@ function WorkoutEntryPage() {
       <div className="container">
         <div className={styles.topBar}>
           <Link to="/home">
-            <img
-              src={HomeIcon}
-              alt="Home"
-              className={styles.homeIcon}
-            />
+            <img src={HomeIcon} alt="Home" className={styles.homeIcon} />
           </Link>
         </div>
         <h2 className={styles.header}>Log Workout</h2>
@@ -332,7 +329,9 @@ function WorkoutEntryPage() {
         {isEditing ? (
           <div>
             <h3 className={styles.header}>Add New</h3>
-            <label htmlFor="nameInput" className={styles.label}>Name:</label>
+            <label htmlFor="nameInput" className={styles.label}>
+              Name:
+            </label>
             <input
               id="nameInput"
               type="text"
@@ -340,7 +339,10 @@ function WorkoutEntryPage() {
               onChange={(e) => setName(e.target.value)}
               className={styles.input}
             />
-            <label htmlFor="presetCheckbox" className={styles.checkboxContainer}>
+            <label
+              htmlFor="presetCheckbox"
+              className={styles.checkboxContainer}
+            >
               <input
                 id="presetCheckbox"
                 type="checkbox"
