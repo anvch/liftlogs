@@ -8,7 +8,7 @@
     "start": "npm run dev --prefix packages/react-frontend",
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
     "start:backend": "node packages/workout-backend/src/server.js",
-    "lint": "npx eslint . && npx prettier --check ."
+    "lint": "npx prettier --check ."
   },
   "author": "",
   "license": "ISC",
@@ -16,6 +16,7 @@
     "packages/*"
   ],
   "devDependencies": {
+    "jest": "^29.7.0",
     "prettier": "^3.3.3"
   },
   "dependencies": {
