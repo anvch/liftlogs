@@ -1,18 +1,18 @@
-const express = require("express");
-const cors = require("cors");
-const dotenv = require("dotenv");
-const {
+import express from "express";
+import cors from "cors";
+import dotenv from "dotenv";
+import {
   registerUser,
   loginUser,
   authenticateUser,
-} = require("./models/authModel");
+} from "./models/authModel.js";
 
 dotenv.config();
 
 const app = express();
 
 // Middleware
-app.use(cors()); // Allow requests from frontend
+app.use(cors());
 app.use(express.json());
 
 // Auth routes (unprotected)
@@ -22,7 +22,6 @@ app.post("/login", loginUser);
 // Protected route example
 app.post("/users", authenticateUser, (req, res) => {
   const userToAdd = req.body;
-  // In lab example, this just returns success
   res.status(201).send(userToAdd);
 });
 
@@ -45,4 +44,4 @@ if (process.env.NODE_ENV !== "test") {
   });
 }
 
-module.exports = app;
+export default app;

@@ -1,6 +1,7 @@
-// src/config/dynamodb.js
-const AWS = require("aws-sdk");
-require("dotenv").config();
+import AWS from "aws-sdk";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 AWS.config.update({
   region: process.env.AWS_REGION || "us-east-1",
@@ -9,4 +10,5 @@ AWS.config.update({
 });
 
 const dynamoDB = new AWS.DynamoDB.DocumentClient();
-module.exports = dynamoDB;
+
+export default dynamoDB;
