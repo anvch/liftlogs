@@ -24,16 +24,16 @@ router.get("/:username/:workoutId", async (req, res) => {
     if (req.user.username !== req.params.username) {
       return res.status(403).json({ error: "Unauthorized access" });
     }
-    
+
     const workout = await WorkoutModel.getWorkout(
-      req.params.username, 
-      req.params.workoutId
+      req.params.username,
+      req.params.workoutId,
     );
-    
+
     if (!workout) {
       return res.status(404).json({ error: "Workout not found" });
     }
-    
+
     res.status(200).json(workout);
   } catch (error) {
     console.error("Get workout error:", error);
@@ -47,12 +47,12 @@ router.get("/:username/date/:date", async (req, res) => {
     if (req.user.username !== req.params.username) {
       return res.status(403).json({ error: "Unauthorized access" });
     }
-    
+
     const workouts = await WorkoutModel.getWorkoutsByDate(
-      req.params.username, 
-      req.params.date
+      req.params.username,
+      req.params.date,
     );
-    
+
     res.status(200).json(workouts);
   } catch (error) {
     console.error("Get workouts by date error:", error);
@@ -102,9 +102,9 @@ router.post("/calendar/:date", async (req, res) => {
   try {
     const { exercises } = req.body;
     const result = await WorkoutModel.addToCalendar(
-      req.user.username, 
-      req.params.date, 
-      exercises
+      req.user.username,
+      req.params.date,
+      exercises,
     );
     res.status(201).json(result);
   } catch (error) {
@@ -123,7 +123,7 @@ router.put("/:username/:workoutId", async (req, res) => {
     const updatedWorkout = await WorkoutModel.updateWorkout(
       req.params.username,
       req.params.workoutId,
-      req.body
+      req.body,
     );
     res.status(200).json(updatedWorkout);
   } catch (error) {

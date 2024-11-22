@@ -63,7 +63,7 @@ const WorkoutModel = {
     const params = {
       TableName: TABLE_NAME,
       KeyConditionExpression: "username = :username",
-      FilterExpression: 
+      FilterExpression:
         "attribute_not_exists(#wtype) OR #wtype <> :calendarType",
       ExpressionAttributeValues: {
         ":username": username,
