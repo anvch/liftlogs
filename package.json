@@ -8,7 +8,7 @@
     "start": "npm run dev --prefix packages/react-frontend",
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
     "start:backend": "node packages/workout-backend/src/server.js",
-    "lint": "npx prettier --check ."
+    "lint": "npm run lint --workspaces"
   },
   "author": "",
   "license": "ISC",
@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "bcrypt": "^5.1.1",
+    "eslint-plugin-jest": "^28.9.0",
     "jsonwebtoken": "^9.0.2",
     "react-calendar": "^5.1.0"
   }

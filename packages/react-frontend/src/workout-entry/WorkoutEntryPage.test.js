@@ -1,4 +1,5 @@
-import React from "react";
+/* eslint-disable react/display-name */
+import React from "react"; // eslint-disable-line no-unused-vars
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom"; // To wrap the component with routing
 import WorkoutEntryPage from "./WorkoutEntryPage"; // Adjust the import path as needed
