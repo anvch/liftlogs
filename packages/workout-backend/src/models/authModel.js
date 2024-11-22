@@ -1,96 +1,106 @@
-const bcrypt = require("bcrypt");
-const jwt = require("jsonwebtoken");
+import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
+import dynamoDB from "../config/dynamodb.js";
 
-// In-memory array for storing users
-const creds = [];
+const TABLE_NAME = "Users";
 
 function generateAccessToken(username) {
-  return new Promise((resolve, reject) => {
-    jwt.sign(
-      { username: username },
-      process.env.JWT_SECRET || "your-secret-key",
-      { expiresIn: "1d" },
-      (error, token) => {
-        if (error) {
-          reject(error);
-        } else {
-          resolve(token);
-        }
-      },
-    );
+  return jwt.sign({ username: username }, process.env.JWT_SECRET, {
+    expiresIn: "1d",
   });
 }
 
-function registerUser(req, res) {
+export function verifyToken(token) {
+  return jwt.verify(token, process.env.JWT_SECRET);
+}
+
+async function registerUser(req, res) {
   const { username, pwd } = req.body;
 
   if (!username || !pwd) {
-    res.status(400).send("Bad request: Invalid input data.");
-  } else if (creds.find((c) => c.username === username)) {
-    res.status(409).send("Username already taken");
-  } else {
-    bcrypt
-      .genSalt(10)
-      .then((salt) => bcrypt.hash(pwd, salt))
-      .then((hashedPassword) => {
-        generateAccessToken(username).then((token) => {
-          console.log("Token:", token);
-          res.status(201).send({ token: token });
-          creds.push({ username, hashedPassword });
-        });
-      });
+    return res.status(400).send("Bad request: Invalid input data.");
+  }
+
+  try {
+    const existingUser = await dynamoDB
+      .get({
+        TableName: TABLE_NAME,
+        Key: { username },
+      })
+      .promise();
+
+    if (existingUser.Item) {
+      return res.status(409).send("Username already taken");
+    }
+
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(pwd, salt);
+    const token = generateAccessToken(username);
+
+    await dynamoDB
+      .put({
+        TableName: TABLE_NAME,
+        Item: {
+          username,
+          hashedPassword,
+        },
+      })
+      .promise();
+
+    res.status(201).send({ token });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Internal server error");
   }
 }
 
-function loginUser(req, res) {
+async function loginUser(req, res) {
   const { username, pwd } = req.body;
-  const retrievedUser = creds.find((c) => c.username === username);
 
-  if (!retrievedUser) {
-    res.status(401).send("Unauthorized");
-  } else {
-    bcrypt
-      .compare(pwd, retrievedUser.hashedPassword)
-      .then((matched) => {
-        if (matched) {
-          generateAccessToken(username).then((token) => {
-            res.status(200).send({ token: token });
-          });
-        } else {
-          res.status(401).send("Unauthorized");
-        }
+  try {
+    const result = await dynamoDB
+      .get({
+        TableName: TABLE_NAME,
+        Key: { username },
       })
-      .catch(() => {
-        res.status(401).send("Unauthorized");
-      });
+      .promise();
+
+    const user = result.Item;
+    if (!user) {
+      return res.status(401).send("Unauthorized");
+    }
+
+    const matched = await bcrypt.compare(pwd, user.hashedPassword);
+    if (!matched) {
+      return res.status(401).send("Unauthorized");
+    }
+
+    const token = generateAccessToken(username);
+    res.status(200).send({ token });
+  } catch (error) {
+    console.error("Error:", error);
+    res.status(500).send("Internal server error");
   }
 }
 
 function authenticateUser(req, res, next) {
-  const authHeader = req.headers["authorization"];
-  const token = authHeader && authHeader.split(" ")[1];
+  try {
+    const authHeader = req.headers["authorization"];
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      return res.status(401).json({ error: "No token provided" });
+    }
 
-  if (!token) {
-    console.log("No token received");
-    res.status(401).end();
-  } else {
-    jwt.verify(
-      token,
-      process.env.JWT_SECRET || "your-secret-key",
-      (error, decoded) => {
-        if (decoded) {
-          next();
-        } else {
-          console.log("JWT error:", error);
-          res.status(401).end();
-        }
-      },
-    );
+    const token = authHeader.split(" ")[1];
+    const decoded = verifyToken(token);
+
+    // Add user info to request
+    req.user = { username: decoded.username };
+
+    next();
+  } catch (error) {
+    console.error("Authentication error:", error);
+    res.status(401).json({ error: "Invalid token" });
   }
 }
 
-module.exports = {
-  registerUser,
-  loginUser,
-  authenticateUser,
-};
+export { registerUser, loginUser, authenticateUser };

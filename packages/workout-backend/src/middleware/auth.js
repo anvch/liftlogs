@@ -1,4 +1,4 @@
-const AuthModel = require("../models/authModel");
+import { verifyToken } from "../models/authModel.js";
 
 const authenticateUser = async (req, res, next) => {
   try {
@@ -8,7 +8,7 @@ const authenticateUser = async (req, res, next) => {
     }
 
     const token = authHeader.split(" ")[1];
-    const decoded = AuthModel.verifyToken(token);
+    const decoded = verifyToken(token);
 
     // Add user info to request
     req.user = { username: decoded.username };
@@ -23,4 +23,4 @@ const authenticateUser = async (req, res, next) => {
   }
 };
 
-module.exports = authenticateUser;
+export default authenticateUser;
