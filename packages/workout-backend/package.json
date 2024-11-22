@@ -4,16 +4,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node src/server.js",
-    "test": "jest --detectOpenHandles",
-    "test:watch": "jest --watch",
     "dev": "nodemon src/server.js",
     "lint": "npx eslint && npx prettier --check ."
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "setupFiles": [
-      "dotenv/config"
-    ]
   },
   "dependencies": {
     "aws-sdk": "^2.1691.0",

@@ -1,6 +1,7 @@
-const express = require("express");
+import express from "express";
+import * as WorkoutModel from "../models/workoutModel.js";
+
 const router = express.Router();
-const WorkoutModel = require("../models/workoutModel");
 
 // Get all workouts for a user
 router.get("/:username", async (req, res) => {
@@ -147,4 +148,4 @@ router.delete("/:username/:workoutId", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;
