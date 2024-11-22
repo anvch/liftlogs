@@ -1,14 +1,17 @@
 export const AuthService = {
   async login(username, pwd) {
     try {
-      const response = await fetch("http://localhost:3001/login", {
-        // Full backend URL
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net/login",
+        {
+          // Full backend URL
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, pwd }),
         },
-        body: JSON.stringify({ username, pwd }),
-      });
+      );
 
       if (!response.ok) {
         const errorBody = await response.text();
@@ -34,14 +37,17 @@ export const AuthService = {
 
   async register(username, pwd) {
     try {
-      const response = await fetch("http://localhost:3001/signup", {
-        // Full backend URL
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        "sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net/signup",
+        {
+          // Full backend URL
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, pwd }),
         },
-        body: JSON.stringify({ username, pwd }),
-      });
+      );
 
       if (!response.ok) {
         const errorBody = await response.text();
