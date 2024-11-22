@@ -1,4 +1,5 @@
 // src/main.jsx
+import React from "react";
 import ReactDOMClient from "react-dom/client";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./home/Home";

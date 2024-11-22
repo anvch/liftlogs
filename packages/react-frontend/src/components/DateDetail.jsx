@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+import { useParams, useNavigate, Link } from "react-router-dom";
 import WorkoutDetail from "./WorkoutDetail";
 import Background from "./Background";
 import homeIcon from "../assets/home.svg";
@@ -6,6 +6,7 @@ import styles from "./datedetail.module.css";
 
 function DateDetail() {
   const { date } = useParams();
+  const navigate = useNavigate();
 
   const tempWeights = {
     name: "Temp Workout",
@@ -27,6 +28,10 @@ function DateDetail() {
   const tempToday = {
     date: "2024-11-15",
     exercise: [tempWeights, tempCardio, tempWeights],
+  };
+
+  const handleHomeClick = () => {
+    navigate(`/home`);
   };
 
   return (

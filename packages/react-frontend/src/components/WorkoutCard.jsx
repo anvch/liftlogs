@@ -1,4 +1,4 @@
-/* eslint-disable react/prop-types */
+import React from "react";
 import styles from "./workout-card.module.css";
 
 function WorkoutCard({ name, type, description }) {

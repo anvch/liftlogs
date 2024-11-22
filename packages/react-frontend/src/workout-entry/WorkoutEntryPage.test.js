@@ -1,10 +1,10 @@
+import React from "react";
 import { render, screen, fireEvent } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom"; // To wrap the component with routing
 import WorkoutEntryPage from "./WorkoutEntryPage"; // Adjust the import path as needed
 import "@testing-library/jest-dom"; // For extended matchers
 
 // Mock external dependencies
-// eslint-disable-next-line react/display-name
 jest.mock("../components/Background", () => () => (
   <div data-testid="background"></div>
 ));

@@ -1,7 +1,7 @@
 /* eslint-disable react/prop-types */
 import styles from "./workoutdetail.module.css";
 
-const WorkoutDetail = ({ workout }) => {
+const WorkoutDetail = ({ key, workout }) => {
   return (
     <div className={styles.workout}>
       <h3>{workout.name}</h3>
