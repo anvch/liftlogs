@@ -22,10 +22,10 @@ jobs:
           node-version: '20.x'
 
       - name: npm install, build, and test
-	      run: |
-		      npm install --workspaces=false
+        run: |
+          npm install --workspaces=false
           npm run -w workout-backend build --if-present
-		      npm run -w workout-backend test --if-present
+          npm run -w workout-backend test --if-present
 
         working-directory: packages/workout-backend
 
