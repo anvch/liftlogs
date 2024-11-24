@@ -2,7 +2,7 @@ export const AuthService = {
   async login(username, pwd) {
     try {
       const response = await fetch(
-        "sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net/login",
+        "https://sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net/login",
         {
           // Full backend URL
           method: "POST",
@@ -38,7 +38,7 @@ export const AuthService = {
   async register(username, pwd) {
     try {
       const response = await fetch(
-        "sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net/signup",
+        "https://sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net/signup",
         {
           // Full backend URL
           method: "POST",
