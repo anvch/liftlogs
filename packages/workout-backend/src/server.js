@@ -29,10 +29,7 @@ app.post("/users", authenticateUser, (req, res) => {
 app.use((err, req, res, next) => {
   console.error(err.stack);
   const status = err.status || 500;
-  const message =
-    process.env.NODE_ENV === "development"
-      ? err.message
-      : "Something went wrong!";
+  const message = err.message;
   res.status(status).json({ error: message });
 });
 
