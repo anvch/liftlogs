@@ -68,3 +68,4 @@ jobs:
           app-name: "sweaty"
           slot-name: "Production"
           package: .
+          start-up-command: "npm run start:backend"
