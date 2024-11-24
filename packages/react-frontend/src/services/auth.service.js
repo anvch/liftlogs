@@ -2,8 +2,8 @@ export const AuthService = {
   async login(username, pwd) {
     try {
       const response = await fetch(
-        //"https://sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net/login",
-        "http://localhost:3001/login",
+        "https://sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net/login",
+        //"http://localhost:3001/login",
         {
           method: "POST",
           headers: {
@@ -28,8 +28,8 @@ export const AuthService = {
   async register(username, pwd) {
     try {
       const response = await fetch(
-        //"https://sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net/signup",
-        "http://localhost:3001/signup",
+        "https://sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net/signup",
+        //"http://localhost:3001/signup",
         {
           method: "POST",
           headers: {
