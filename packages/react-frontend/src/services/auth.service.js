@@ -1,13 +1,17 @@
 export const AuthService = {
   async login(username, pwd) {
     try {
-      const response = await fetch("http://localhost:3001/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        //"https://sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net/login",
+        "http://localhost:3001/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, pwd }),
         },
-        body: JSON.stringify({ username, pwd }),
-      });
+      );
 
       const responseData = await this.parseResponse(response);
       this.setToken(responseData.token);
@@ -23,13 +27,17 @@ export const AuthService = {
 
   async register(username, pwd) {
     try {
-      const response = await fetch("http://localhost:3001/signup", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+      const response = await fetch(
+        //"https://sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net/signup",
+        "http://localhost:3001/signup",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ username, pwd }),
         },
-        body: JSON.stringify({ username, pwd }),
-      });
+      );
 
       const responseData = await this.parseResponse(response);
       this.setToken(responseData.token);
