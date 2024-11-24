@@ -1,17 +1,16 @@
-const BASE_URL = import.meta.env.VITE_BACKEND_HOST || "https://sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net"
+const BASE_URL =
+  import.meta.env.VITE_BACKEND_HOST ||
+  "https://sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net";
 export const AuthService = {
   async login(username, pwd) {
     try {
-      const response = await fetch(
-        `${BASE_URL}/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, pwd }),
+      const response = await fetch(`${BASE_URL}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({ username, pwd }),
+      });
 
       const responseData = await this.parseResponse(response);
       this.setToken(responseData.token);
@@ -27,16 +26,13 @@ export const AuthService = {
 
   async register(username, pwd) {
     try {
-      const response = await fetch(
-        `${BASE_URL}/signup`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ username, pwd }),
+      const response = await fetch(`${BASE_URL}/signup`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
         },
-      );
+        body: JSON.stringify({ username, pwd }),
+      });
 
       const responseData = await this.parseResponse(response);
       this.setToken(responseData.token);
