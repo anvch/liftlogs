@@ -3,8 +3,8 @@ export const AuthService = {
     try {
       const response = await fetch(
         "https://sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net/login",
+        //"http://localhost:3001/login",
         {
-          // Full backend URL
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -13,23 +13,13 @@ export const AuthService = {
         },
       );
 
-      if (!response.ok) {
-        const errorBody = await response.text();
-        console.error("Login Error:", {
-          endpoint: "/login",
-          status: response.status,
-          body: errorBody,
-        });
-        throw new Error(errorBody || "Login failed. Please try again.");
-      }
-
-      const { token } = await response.json();
-      this.setToken(token);
-      return token;
+      const responseData = await this.parseResponse(response);
+      this.setToken(responseData.token);
+      return responseData.token;
     } catch (error) {
-      console.error("Unexpected Login Error:", {
+      console.error("Login Error:", {
+        endpoint: "/login",
         message: error.message,
-        stack: error.stack,
       });
       throw error;
     }
@@ -39,8 +29,8 @@ export const AuthService = {
     try {
       const response = await fetch(
         "https://sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net/signup",
+        //"http://localhost:3001/signup",
         {
-          // Full backend URL
           method: "POST",
           headers: {
             "Content-Type": "application/json",
@@ -49,26 +39,29 @@ export const AuthService = {
         },
       );
 
-      if (!response.ok) {
-        const errorBody = await response.text();
-        console.error("Registration Error:", {
-          endpoint: "/signup",
-          status: response.status,
-          body: errorBody,
-        });
-        throw new Error(errorBody || "Registration failed. Please try again.");
-      }
-
-      const { token } = await response.json();
-      this.setToken(token);
-      return token;
+      const responseData = await this.parseResponse(response);
+      this.setToken(responseData.token);
+      return responseData.token;
     } catch (error) {
-      console.error("Unexpected Registration Error:", {
+      console.error("Registration Error:", {
+        endpoint: "/signup",
         message: error.message,
-        stack: error.stack,
       });
       throw error;
     }
+  },
+
+  // Utility function to parse response and handle errors
+  async parseResponse(response) {
+    if (!response.ok) {
+      const errorBody = await response.json().catch(() => ({
+        error: "Unexpected Error",
+        message: "Unable to parse server response.",
+      }));
+      throw new Error(errorBody.message || "An unknown error occurred.");
+    }
+
+    return response.json();
   },
 
   setToken(token) {

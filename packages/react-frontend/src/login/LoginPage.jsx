@@ -12,39 +12,23 @@ function LoginPage() {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = async (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError("");
 
     try {
-      await AuthService.login(username, password);
-      navigate("/home"); // Redirect to dashboard or home page after login
+      if (isRegistering) {
+        await AuthService.register(username, password);
+      } else {
+        await AuthService.login(username, password);
+      }
+      navigate("/home"); // Redirect to dashboard or home page after successful login/register
     } catch (err) {
-      console.error("Login Error:", {
+      console.error(`${isRegistering ? "Registration" : "Login"} Error:`, {
         message: err.message,
-        stack: err.stack,
       });
-      setError("Invalid username or password.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRegister = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-
-    try {
-      await AuthService.register(username, password);
-      navigate("/home"); // Redirect to dashboard or home page after registration
-    } catch (err) {
-      console.error("Registration Error:", {
-        message: err.message,
-        stack: err.stack,
-      });
-      setError("Registration failed. Username may already exist.");
+      setError(err.message); // Use the message from the backend response
     } finally {
       setLoading(false);
     }
@@ -54,7 +38,7 @@ function LoginPage() {
     <div className="container">
       <Background />
       <h2 className={styles.header}>{isRegistering ? "Register" : "Login"}</h2>
-      <form onSubmit={isRegistering ? handleRegister : handleLogin}>
+      <form onSubmit={handleSubmit}>
         <label className={styles.label}>Username:</label>
         <input
           type="text"
