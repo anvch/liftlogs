@@ -12,7 +12,7 @@ function MyWorkouts() {
   return (
     <div className="container">
       <div className={styles.myworkouts}>
-        <h2 className>My Workouts</h2>
+        <h2>My Workouts</h2>
         <Link to="/workout-entry">
           <button> + Add Workout</button>
         </Link>
