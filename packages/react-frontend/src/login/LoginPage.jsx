@@ -1,16 +1,19 @@
-import React, { useState } from "react"; // eslint-disable-line no-unused-vars
-import { useNavigate } from "react-router-dom";
-import { AuthService } from "../services/auth.service";
+import React, { useState, useContext } from "react"; // eslint-disable-line no-unused-vars
+import { useNavigate, useLocation } from "react-router-dom";
+import { UserContext } from "../contexts/UserContext";
 import styles from "./login.module.css";
 import Background from "../components/Background";
 
 function LoginPage() {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [isRegistering, setIsRegistering] = useState(false); // Toggle between login and register
+  const [isRegistering, setIsRegistering] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  const { login, register } = useContext(UserContext); // Use context functions
   const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -19,16 +22,17 @@ function LoginPage() {
 
     try {
       if (isRegistering) {
-        await AuthService.register(username, password);
+        await register(username, password); // Use context's register function
       } else {
-        await AuthService.login(username, password);
+        await login(username, password); // Use context's login function
       }
-      navigate("/home"); // Redirect to dashboard or home page after successful login/register
+      const from = location.state?.from?.pathname || "/home"; // Redirect to intended page or home
+      navigate(from, { replace: true });
     } catch (err) {
       console.error(`${isRegistering ? "Registration" : "Login"} Error:`, {
         message: err.message,
       });
-      setError(err.message); // Use the message from the backend response
+      setError(err.message || "An unexpected error occurred."); // Use error message from context or a fallback
     } finally {
       setLoading(false);
     }
