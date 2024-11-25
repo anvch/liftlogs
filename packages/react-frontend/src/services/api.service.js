@@ -1,12 +1,30 @@
 import { AuthService } from "./auth.service";
+
 export const ApiService = {
+  navigate: null, // Placeholder for the navigate function
+
+  // Set the React Router navigate function
+  setNavigate(navigateFn) {
+    this.navigate = navigateFn;
+  },
+
+  // Redirect to login page on unauthorized access
+  handleUnauthorized() {
+    AuthService.logout();
+    if (this.navigate) {
+      this.navigate("/login");
+    } else {
+      console.error("Unauthorized access, navigate function is not set.");
+    }
+  },
+
+  // General fetch method with token and error handling
   async fetch(url, options = {}) {
     const token = AuthService.getToken();
-
     const headers = {
       "Content-Type": "application/json",
       ...(token && { Authorization: `Bearer ${token}` }),
-      ...options.headers,
+      ...(options.headers || {}),
     };
 
     try {
@@ -16,25 +34,33 @@ export const ApiService = {
       });
 
       if (response.status === 401) {
-        AuthService.logout();
-        window.location.href = "/login";
+        this.handleUnauthorized();
         return;
       }
 
-      if (!response.ok) {
-        const error = await response.text();
-        throw new Error(error);
-      }
-
-      const text = await response.text();
-      return text ? JSON.parse(text) : null;
+      return await this.parseResponse(response);
     } catch (error) {
-      console.error("API Error:", error);
+      console.error("API Error:", { url, options, message: error.message });
       throw error;
     }
   },
 
-  // Rest remains the same
+  // Parse response or throw errors
+  async parseResponse(response) {
+    if (!response.ok) {
+      const errorText = await response.text();
+      try {
+        const error = JSON.parse(errorText);
+        throw new Error(error.message || "An error occurred.");
+      } catch {
+        throw new Error(errorText || "An error occurred.");
+      }
+    }
+
+    const text = await response.text();
+    return text ? JSON.parse(text) : null;
+  },
+
   get(url) {
     return this.fetch(url);
   },

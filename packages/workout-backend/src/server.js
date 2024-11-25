@@ -1,11 +1,8 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import {
-  registerUser,
-  loginUser,
-  authenticateUser,
-} from "./models/authModel.js";
+import { registerUser, loginUser } from "./models/authModel.js";
+import workoutRoutes from "./routes/workoutRoutes.js";
 
 dotenv.config();
 
@@ -19,21 +16,18 @@ app.use(express.json());
 app.post("/signup", registerUser);
 app.post("/login", loginUser);
 
-// Protected route example
-app.post("/users", authenticateUser, (req, res) => {
-  const userToAdd = req.body;
-  res.status(201).send(userToAdd);
-});
+// Workout routes (protected)
+app.use("/api", workoutRoutes);
 
-// Error handling
+// Error handling middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
+  console.error("Server Error:", err.stack);
   const status = err.status || 500;
-  const message = err.message;
+  const message = err.message || "Internal Server Error";
   res.status(status).json({ error: message });
 });
 
-// Only start server if not in test mode
+// Start server
 if (process.env.NODE_ENV !== "test") {
   const PORT = process.env.PORT || 8080;
   app.listen(PORT, () => {
