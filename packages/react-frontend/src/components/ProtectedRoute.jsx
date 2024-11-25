@@ -5,7 +5,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 
 const ProtectedRoute = ({ children }) => {
-  const { isAuthenticated, loading } = useContext(UserContext);
+  const { user, loading } = useContext(UserContext);
   const location = useLocation();
 
   if (loading) {
@@ -13,7 +13,7 @@ const ProtectedRoute = ({ children }) => {
     return <p>Loading...</p>;
   }
 
-  if (!isAuthenticated) {
+  if (!user) {
     // Redirect to login if not authenticated
     return <Navigate to="/login" state={{ from: location }} replace />;
   }
