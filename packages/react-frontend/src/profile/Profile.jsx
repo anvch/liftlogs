@@ -1,4 +1,6 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "../contexts/UserContext";
 import MyWorkouts from "../components/MyWorkouts";
 import homeIcon from "../assets/home.svg";
 import styles from "./profile.module.css";
@@ -8,6 +10,14 @@ function Profile() {
   const testUser = {
     name: "John Doe",
     bio: "Description of John Doe",
+  };
+
+  const { logout } = useContext(UserContext); // Access logout from UserContext
+  const navigate = useNavigate(); // Hook to navigate programmatically
+
+  const handleLogout = () => {
+    logout(); // Call the logout function
+    navigate("/login"); // Redirect to login page
   };
 
   return (
@@ -35,6 +45,10 @@ function Profile() {
         </div>
       </div>
       <MyWorkouts className={styles.myworkouts}></MyWorkouts>
+      <br />
+      <button className={styles.logoutButton} onClick={handleLogout}>
+        Logout
+      </button>
     </div>
   );
 }
