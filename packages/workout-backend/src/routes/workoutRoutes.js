@@ -140,7 +140,7 @@ router.delete("/workouts/:id", async (req, res) => {
 /**
  * Fetch preset workouts.
  */
-router.get("/workouts/presets", async (req, res) => {
+router.get("/presets", async (req, res) => {
   try {
     const presets = await WorkoutModel.getPresets(req.user.username);
     res.status(200).json(presets || []);
