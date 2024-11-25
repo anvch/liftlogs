@@ -2,11 +2,13 @@ import dynamoDB from "../config/dynamodb.js";
 
 const TABLE_NAME = "Workouts";
 
-// Create a new workout (works for both strength and cardio)
+// Create a new workout (supports presets)
 export async function createWorkout(username, workoutData) {
   const now = new Date();
   const date = now.toISOString().split("T")[0];
   const timestamp = Math.floor(now.getTime() / 1000);
+
+  const isPreset = workoutData.isPreset || false; // Default to false
 
   let formattedWorkout;
   if (workoutData.type === "strength") {
@@ -17,6 +19,7 @@ export async function createWorkout(username, workoutData) {
         reps: set.reps,
         weight: set.weight,
       })),
+      isPreset,
     };
   } else if (workoutData.type === "cardio") {
     formattedWorkout = {
@@ -24,6 +27,7 @@ export async function createWorkout(username, workoutData) {
       workoutType: "cardio",
       distance: workoutData.distance,
       time: workoutData.time,
+      isPreset,
     };
   }
 
@@ -41,24 +45,77 @@ export async function createWorkout(username, workoutData) {
   return params.Item;
 }
 
-// Add workout to calendar
-export async function addToCalendar(username, date, exercises) {
+// Get all preset workouts
+export async function getPresets(username) {
   const params = {
     TableName: TABLE_NAME,
-    Item: {
-      username: username,
-      workoutId: `CALENDAR#${date}`,
-      workoutType: "calendar",
-      exercises: exercises,
-      dateScheduled: date,
+    KeyConditionExpression: "username = :username",
+    FilterExpression: "#isPreset = :trueValue",
+    ExpressionAttributeValues: {
+      ":username": username,
+      ":trueValue": true,
+    },
+    ExpressionAttributeNames: {
+      "#isPreset": "isPreset",
     },
   };
 
-  await dynamoDB.put(params).promise();
-  return params.Item;
+  const result = await dynamoDB.query(params).promise();
+  return result.Items;
 }
 
-// Get all workouts for a user (excluding calendar entries)
+// Add or update a calendar entry for a specific date
+export async function addToCalendar(username, date, workoutIds) {
+  const calendarId = `CALENDAR#${date}`;
+
+  const existingEntryParams = {
+    TableName: TABLE_NAME,
+    Key: {
+      username: username,
+      workoutId: calendarId,
+    },
+  };
+
+  const existingEntryResult = await dynamoDB.get(existingEntryParams).promise();
+  const existingEntry = existingEntryResult.Item;
+
+  if (existingEntry) {
+    const updatedExercises = [
+      ...new Set([...existingEntry.exercises, ...workoutIds]),
+    ]; // Avoid duplicates
+
+    const updateParams = {
+      TableName: TABLE_NAME,
+      Key: {
+        username: username,
+        workoutId: calendarId,
+      },
+      UpdateExpression: "SET exercises = :exercises",
+      ExpressionAttributeValues: {
+        ":exercises": updatedExercises,
+      },
+    };
+
+    await dynamoDB.update(updateParams).promise();
+    return { ...existingEntry, exercises: updatedExercises };
+  }
+
+  const newEntryParams = {
+    TableName: TABLE_NAME,
+    Item: {
+      username: username,
+      workoutId: calendarId,
+      workoutType: "calendar",
+      dateScheduled: date,
+      exercises: workoutIds,
+    },
+  };
+
+  await dynamoDB.put(newEntryParams).promise();
+  return newEntryParams.Item;
+}
+
+// Get all workouts for a user (excludes calendar entries)
 export async function getWorkouts(username) {
   const params = {
     TableName: TABLE_NAME,
@@ -77,7 +134,7 @@ export async function getWorkouts(username) {
   return result.Items;
 }
 
-// Get a specific workout
+// Get a specific workout by ID
 export async function getWorkout(username, workoutId) {
   const params = {
     TableName: TABLE_NAME,
@@ -91,9 +148,9 @@ export async function getWorkout(username, workoutId) {
   return result.Item;
 }
 
-// Get workouts by date
+// Get workouts scheduled for a specific date
+// includes the full information
 export async function getWorkoutsByDate(username, date) {
-  // First get the calendar entry for this date
   const calendarParams = {
     TableName: TABLE_NAME,
     Key: {
@@ -106,69 +163,134 @@ export async function getWorkoutsByDate(username, date) {
   const calendarEntry = calendarResult.Item;
 
   if (!calendarEntry || !calendarEntry.exercises) {
-    return {
-      date,
-      workouts: [],
-    };
+    return { date, workouts: [] };
   }
 
-  // Then get all workouts
-  const workouts = await getWorkouts(username);
-
-  // Match calendar exercises with workout details
-  const workoutDetails = calendarEntry.exercises
-    .map((exerciseName) => workouts.find((w) => w.name === exerciseName))
-    .filter((w) => w !== undefined);
+  const workoutDetails = await Promise.all(
+    calendarEntry.exercises.map((workoutId) => getWorkout(username, workoutId)),
+  );
 
   return {
     date,
-    workouts: workoutDetails,
+    workouts: workoutDetails.filter(Boolean),
   };
 }
 
-// Delete a workout
+// Get workouts for a specific month and year
+// Combines some useful things, returns a list of objects with date and workouts field
+// the workouts have the full info, not just the ID's
+export async function getWorkoutsForMonth(username, year, month) {
+  const monthPrefix = `${year}-${month.toString().padStart(2, "0")}`; // e.g., "2024-11"
+
+  // Step 1: Query calendar entries for the month
+  const calendarParams = {
+    TableName: TABLE_NAME,
+    KeyConditionExpression:
+      "username = :username AND begins_with(workoutId, :monthPrefix)",
+    ExpressionAttributeValues: {
+      ":username": username,
+      ":monthPrefix": `CALENDAR#${monthPrefix}`,
+    },
+  };
+
+  const calendarResults = await dynamoDB.query(calendarParams).promise();
+  const calendarEntries = calendarResults.Items;
+
+  if (!calendarEntries || calendarEntries.length === 0) {
+    return []; // No workouts for the month
+  }
+
+  // Step 2: Fetch full workout details for all workouts in the month
+  const workoutIds = calendarEntries.flatMap((entry) => entry.exercises);
+  const uniqueWorkoutIds = [...new Set(workoutIds)]; // Avoid duplicate queries
+
+  const workoutDetails = await Promise.all(
+    uniqueWorkoutIds.map((workoutId) => getWorkout(username, workoutId)),
+  );
+
+  // Step 3: Combine calendar entries with full workout details
+  const workoutsByDate = calendarEntries.map((entry) => {
+    const workouts = entry.exercises
+      .map((workoutId) =>
+        workoutDetails.find((w) => w && w.workoutId === workoutId),
+      )
+      .filter(Boolean);
+
+    return {
+      date: entry.dateScheduled,
+      workouts,
+    };
+  });
+
+  return workoutsByDate;
+}
+
+// Delete a workout and clean up calendar references
 export async function deleteWorkout(username, workoutId) {
+  // Step 1: Clean calendar entries referencing this workout
+  const calendarEntries = await dynamoDB
+    .query({
+      TableName: TABLE_NAME,
+      KeyConditionExpression:
+        "username = :username AND begins_with(workoutId, :prefix)",
+      ExpressionAttributeValues: {
+        ":username": username,
+        ":prefix": "CALENDAR#",
+      },
+    })
+    .promise();
+
+  for (const entry of calendarEntries.Items) {
+    const updatedExercises = entry.exercises.filter((id) => id !== workoutId);
+
+    if (updatedExercises.length < entry.exercises.length) {
+      await dynamoDB
+        .update({
+          TableName: TABLE_NAME,
+          Key: { username: entry.username, workoutId: entry.workoutId },
+          UpdateExpression: "SET exercises = :exercises",
+          ExpressionAttributeValues: { ":exercises": updatedExercises },
+        })
+        .promise();
+    }
+  }
+
+  // Step 2: Delete the workout
   const params = {
     TableName: TABLE_NAME,
-    Key: {
-      username: username,
-      workoutId: workoutId,
-    },
+    Key: { username: username, workoutId: workoutId },
   };
 
   await dynamoDB.delete(params).promise();
-  return { message: "Workout deleted successfully" };
+  return { message: "Workout and calendar references deleted successfully" };
 }
 
-// Update a workout
+// Update a workout by ID
+// this updates the "preset" or workout itself, but because the calendar is
+// based on workoutId's this updates everywhere that this workout is referenced
 export async function updateWorkout(username, workoutId, updateData) {
   const workout = await getWorkout(username, workoutId);
-  if (!workout) {
-    throw new Error("Workout not found");
-  }
+  if (!workout) throw new Error("Workout not found");
 
   const updateParams = {
     TableName: TABLE_NAME,
-    Key: {
-      username: username,
-      workoutId: workoutId,
-    },
-    UpdateExpression: "set",
+    Key: { username: username, workoutId: workoutId },
+    UpdateExpression: "SET",
     ExpressionAttributeNames: {},
     ExpressionAttributeValues: {},
   };
 
-  let updateExpression = [];
+  const updateExpression = [];
   Object.entries(updateData).forEach(([key, value], index) => {
-    const attributeName = `#attr${index}`;
-    const attributeValue = `:val${index}`;
-    updateParams.ExpressionAttributeNames[attributeName] = key;
-    updateParams.ExpressionAttributeValues[attributeValue] = value;
-    updateExpression.push(`${attributeName} = ${attributeValue}`);
+    const attrName = `#attr${index}`;
+    const attrValue = `:val${index}`;
+    updateParams.ExpressionAttributeNames[attrName] = key;
+    updateParams.ExpressionAttributeValues[attrValue] = value;
+    updateExpression.push(`${attrName} = ${attrValue}`);
   });
 
-  updateParams.UpdateExpression = "set " + updateExpression.join(", ");
+  updateParams.UpdateExpression = "SET " + updateExpression.join(", ");
 
   await dynamoDB.update(updateParams).promise();
-  return await getWorkout(username, workoutId);
+  return getWorkout(username, workoutId);
 }
