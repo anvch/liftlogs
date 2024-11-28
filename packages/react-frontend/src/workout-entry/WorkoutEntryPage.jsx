@@ -70,17 +70,12 @@ function WorkoutEntryPage() {
         newWorkoutData.time = parseFloat(time);
       }
 
-      console.log(newWorkoutData);
       // now to handle what happens to the data when submitting.
       // we are either using an unedited preset, modifying a preset,
       // or making a brand new workout
       if (preset) {
         // we are using a preset
         const selectedPreset = presets.find((p) => p.workoutId === preset);
-        if (!selectedPreset) {
-          console.error("Selected preset not found");
-          return;
-        }
         // get the preset's workoutID
         workoutId = selectedPreset.workoutId;
         if (isEditing && createPreset) {
@@ -171,7 +166,7 @@ function WorkoutEntryPage() {
   const renderPresetDetails = () => {
     const selectedPreset = presets.find((p) => p.workoutId === preset);
 
-    if (!selectedPreset) return null;
+    //if (!selectedPreset) return null;
 
     return (
       <div>
@@ -194,7 +189,8 @@ function WorkoutEntryPage() {
         )}
         {selectedPreset.workoutType === cardioType && (
           <p>
-            Distance: {selectedPreset.distance}, Time: {selectedPreset.time}
+            Distance (miles): {selectedPreset.distance}, Time (min):{" "}
+            {selectedPreset.time}
           </p>
         )}
         <div className={styles["buttons-container"]}>
@@ -355,7 +351,7 @@ function WorkoutEntryPage() {
   const renderCardioInput = () => (
     <div>
       <label className={styles.label} htmlFor="distance-input">
-        Distance:
+        Distance (miles):
       </label>
       <input
         id="distance-input"
@@ -365,7 +361,7 @@ function WorkoutEntryPage() {
         className={styles.input}
       />
       <label className={styles.label} htmlFor="time-input">
-        Time:
+        Time (min):
       </label>
       <input
         id="time-input"
