@@ -5,13 +5,6 @@ import Background from "../components/Background";
 import HomeIcon from "../assets/home.svg";
 import { WorkoutService } from "../services/workout.service";
 
-/* TODO:
-  - make preset creation optional rather than automatic (checkbox style)
-  - nameless workouts should not be made into presets and should disable the 
-  create preset checkbox.
-  - option to remove a preset in the preset details page
-*/
-
 function WorkoutEntryPage() {
   const weightType = "weights";
   const cardioType = "cardio";
