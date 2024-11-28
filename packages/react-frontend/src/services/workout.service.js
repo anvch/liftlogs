@@ -49,7 +49,7 @@ export const WorkoutService = {
   async addWorkoutsToCalendar(year, month, day, workoutIds) {
     return ApiService.post(
       `/api/calendar/${year}/${month.toString().padStart(2, "0")}/${day.toString().padStart(2, "0")}`,
-      { exercises: workoutIds },
+      { workouts: workoutIds },
     );
   },
 };

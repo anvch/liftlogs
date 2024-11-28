@@ -3,18 +3,14 @@ import { Link } from "react-router-dom";
 import styles from "./workout-entry.module.css";
 import Background from "../components/Background";
 import HomeIcon from "../assets/home.svg";
-
-/* TODO:
-  - make preset creation optional rather than automatic (checkbox style)
-  - nameless workouts should not be made into presets and should disable the 
-  create preset checkbox.
-  - option to remove a preset in the preset details page
-*/
+import { WorkoutService } from "../services/workout.service";
 
 function WorkoutEntryPage() {
+  const weightType = "weights";
+  const cardioType = "cardio";
   const [preset, setPreset] = useState("");
   const [name, setName] = useState("");
-  const [workoutType, setWorkoutType] = useState("Weights");
+  const [workoutType, setWorkoutType] = useState(weightType);
   const [sets, setSets] = useState([]);
   const [reps, setReps] = useState("");
   const [weight, setWeight] = useState("");
@@ -23,17 +19,28 @@ function WorkoutEntryPage() {
   const [presets, setPresets] = useState([]);
   const [isEditing, setIsEditing] = useState(true);
   const [createPreset, setCreatePreset] = useState(false);
+  const [date, setDate] = useState(
+    () => new Date().toISOString().split("T")[0],
+  );
 
-  // Load presets from localStorage on component mount
   useEffect(() => {
-    const savedPresets = JSON.parse(localStorage.getItem("presets")) || [];
-    setPresets(savedPresets);
+    const fetchPresets = async () => {
+      try {
+        const data = await WorkoutService.getPresets();
+        setPresets(data);
+      } catch (error) {
+        console.error("Error fetching presets:", error);
+      }
+    };
+
+    fetchPresets();
   }, []);
 
-  // Save presets to localStorage whenever presets change
   useEffect(() => {
-    localStorage.setItem("presets", JSON.stringify(presets));
-  }, [presets]);
+    if (!name) {
+      setCreatePreset(false);
+    }
+  }, [name]);
 
   const handleAddSet = () => {
     if (reps > 0 && weight > 0) {
@@ -43,46 +50,87 @@ function WorkoutEntryPage() {
     }
   };
 
-  const handleSubmit = () => {
-    const newWorkout = {
-      name: name || "Unnamed Workout",
-      workoutType,
-      sets,
-      distance,
-      time,
-    };
+  const handleSubmit = async () => {
+    try {
+      let workoutId;
 
-    if (createPreset && name) {
-      const existingIndex = presets.findIndex(
-        (p) => p.name === newWorkout.name,
-      );
+      // Construct the newWorkoutData object
+      const newWorkoutData = {
+        name: name || "Unnamed Workout",
+        workoutType: workoutType.toLowerCase(),
+        dateCreated: new Date().toISOString().split("T")[0],
+        isPreset: createPreset,
+      };
 
-      if (existingIndex !== -1) {
-        if (
-          window.confirm("A preset with this name already exists. Overwrite?")
-        ) {
-          const updatedPresets = [...presets];
-          updatedPresets[existingIndex] = newWorkout;
-          setPresets(updatedPresets);
+      // some data depends on the type of workout
+      if (workoutType === weightType) {
+        newWorkoutData.sets = sets;
+      } else if (workoutType === cardioType) {
+        newWorkoutData.distance = parseFloat(distance);
+        newWorkoutData.time = parseFloat(time);
+      }
+
+      console.log(newWorkoutData);
+      // now to handle what happens to the data when submitting.
+      // we are either using an unedited preset, modifying a preset,
+      // or making a brand new workout
+      if (preset) {
+        // we are using a preset
+        const selectedPreset = presets.find((p) => p.workoutId === preset);
+        if (!selectedPreset) {
+          console.error("Selected preset not found");
+          return;
+        }
+        // get the preset's workoutID
+        workoutId = selectedPreset.workoutId;
+        if (isEditing && createPreset) {
+          // modifying a preset
+          if (
+            window.confirm(
+              "You are making changes to an existing preset. Overwrite?",
+            )
+          ) {
+            await WorkoutService.updateWorkout(workoutId, newWorkoutData);
+          }
+        } else if (isEditing) {
+          // not saving as a preset, means just make a new one
+          const newWorkout = await WorkoutService.createWorkout(newWorkoutData);
+          workoutId = newWorkout.workoutId;
         }
       } else {
-        setPresets([...presets, newWorkout]);
+        // we are not using a preset
+        const newWorkout = await WorkoutService.createWorkout(newWorkoutData);
+        workoutId = newWorkout.workoutId;
       }
-    }
 
-    resetForm();
-    setIsEditing(true);
+      // finally, no matter what happened add to the calendar
+      const [year, month, day] = date
+        .split("-")
+        .map((val) => parseInt(val, 10));
+      await WorkoutService.addWorkoutsToCalendar(year, month, day, [workoutId]);
+
+      resetForm();
+      setIsEditing(true);
+
+      if (createPreset) {
+        const updatedPresets = await WorkoutService.getPresets();
+        setPresets(updatedPresets);
+      }
+    } catch (error) {
+      console.error("Error submitting workout:", error);
+    }
   };
 
   const resetForm = () => {
     setPreset("");
     setName("");
-    setWorkoutType("Weights");
+    setWorkoutType(weightType);
     setSets([]);
     setReps("");
     setWeight("");
     setDistance("");
     setTime("");
+    setDate(new Date().toISOString().split("T")[0]);
   };
 
   const handleRemoveSet = (index) => {
@@ -90,16 +138,38 @@ function WorkoutEntryPage() {
     setSets(updatedSets);
   };
 
-  const handleRemovePreset = (name) => {
+  const handleRemovePreset = async (workoutId) => {
     if (window.confirm("Are you sure you want to delete this preset?")) {
-      setPresets(presets.filter((preset) => preset.name !== name));
-      setPreset("");
-      setIsEditing(true);
+      try {
+        await WorkoutService.updateWorkout(workoutId, { isPreset: false });
+
+        const updatedPresets = await WorkoutService.getPresets();
+        setPresets(updatedPresets);
+        setPreset("");
+        setIsEditing(true);
+      } catch (error) {
+        console.error("Error removing preset:", error);
+      }
     }
   };
 
+  const renderDateSelector = () => (
+    <div>
+      <label htmlFor="date-input" className={styles.label}>
+        Date:
+      </label>
+      <input
+        id="date-input"
+        type="date"
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+        className={styles.input}
+      />
+    </div>
+  );
+
   const renderPresetDetails = () => {
-    const selectedPreset = presets.find((p) => p.name === preset);
+    const selectedPreset = presets.find((p) => p.workoutId === preset);
 
     if (!selectedPreset) return null;
 
@@ -109,10 +179,11 @@ function WorkoutEntryPage() {
         <p data-testid="preset-name">
           <strong>Name:</strong> {selectedPreset.name}
         </p>
+        {renderDateSelector()}
         <p>
           <strong>Type:</strong> {selectedPreset.workoutType}
         </p>
-        {selectedPreset.workoutType === "Weights" && (
+        {selectedPreset.workoutType === weightType && (
           <ul>
             {selectedPreset.sets.map((set, index) => (
               <li key={index}>
@@ -121,7 +192,7 @@ function WorkoutEntryPage() {
             ))}
           </ul>
         )}
-        {selectedPreset.workoutType === "Cardio" && (
+        {selectedPreset.workoutType === cardioType && (
           <p>
             Distance: {selectedPreset.distance}, Time: {selectedPreset.time}
           </p>
@@ -133,6 +204,7 @@ function WorkoutEntryPage() {
           <button
             onClick={() => {
               setIsEditing(true);
+              setCreatePreset(true);
               setName(selectedPreset.name);
               setWorkoutType(selectedPreset.workoutType);
               setSets(selectedPreset.sets || []);
@@ -144,7 +216,7 @@ function WorkoutEntryPage() {
             Edit
           </button>
           <button
-            onClick={() => handleRemovePreset(selectedPreset.name)}
+            onClick={() => handleRemovePreset(selectedPreset.workoutId)}
             className={`${styles.button} ${styles.removeButton}`}
           >
             Delete
@@ -170,14 +242,25 @@ function WorkoutEntryPage() {
             setIsEditing(true);
             resetForm();
           } else {
-            setIsEditing(false);
+            const selectedPreset = presets.find(
+              (p) => p.workoutId === selectedValue,
+            );
+            if (selectedPreset) {
+              setIsEditing(false);
+              setCreatePreset(true);
+              setName(selectedPreset.name);
+              setWorkoutType(selectedPreset.workoutType);
+              setSets(selectedPreset.sets || []);
+              setDistance(selectedPreset.distance || "");
+              setTime(selectedPreset.time || "");
+            }
           }
         }}
         className={styles.select}
       >
         <option value="">No Preset (Add New)</option>
         {presets.map((p, index) => (
-          <option key={index} value={p.name}>
+          <option key={index} value={p.workoutId}>
             {p.name}
           </option>
         ))}
@@ -195,9 +278,9 @@ function WorkoutEntryPage() {
           <input
             id="weights-radio"
             type="radio"
-            value="Weights"
-            checked={workoutType === "Weights"}
-            onChange={() => setWorkoutType("Weights")}
+            value={weightType}
+            checked={workoutType === weightType}
+            onChange={() => setWorkoutType(weightType)}
           />
           Weights
         </label>
@@ -205,9 +288,9 @@ function WorkoutEntryPage() {
           <input
             id="cardio-radio"
             type="radio"
-            value="Cardio"
-            checked={workoutType === "Cardio"}
-            onChange={() => setWorkoutType("Cardio")}
+            value={cardioType}
+            checked={workoutType === cardioType}
+            onChange={() => setWorkoutType(cardioType)}
           />
           Cardio
         </label>
@@ -297,8 +380,8 @@ function WorkoutEntryPage() {
   const renderSubmitButton = () => {
     const isDisabled =
       (isEditing &&
-        ((workoutType === "Weights" && sets.length === 0) ||
-          (workoutType === "Cardio" && (!distance || !time)))) ||
+        ((workoutType === weightType && sets.length === 0) ||
+          (workoutType === cardioType && (!distance || !time)))) ||
       (!isEditing && !preset);
 
     return (
@@ -312,8 +395,6 @@ function WorkoutEntryPage() {
     );
   };
 
-  // TODO: add a button on the top right of the container to return home
-  // use ../assets/home.svg as the button's picture
   return (
     <div className="wrapper">
       <Background />
@@ -352,9 +433,10 @@ function WorkoutEntryPage() {
               />
               Save as Preset
             </label>
+            {renderDateSelector()}
             {renderWorkoutTypeSelector()}
-            {workoutType === "Weights" && renderWeightsInput()}
-            {workoutType === "Cardio" && renderCardioInput()}
+            {workoutType === weightType && renderWeightsInput()}
+            {workoutType === cardioType && renderCardioInput()}
             {renderSubmitButton()}
           </div>
         ) : (

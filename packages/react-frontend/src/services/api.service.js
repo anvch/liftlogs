@@ -28,7 +28,7 @@ export const ApiService = {
     };
 
     try {
-      const response = await fetch(url, {
+      const response = await fetch(AuthService.BASE_URL + url, {
         ...options,
         headers,
       });
@@ -37,7 +37,6 @@ export const ApiService = {
         this.handleUnauthorized();
         return;
       }
-
       return await this.parseResponse(response);
     } catch (error) {
       console.error("API Error:", { url, options, message: error.message });

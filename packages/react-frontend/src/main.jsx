@@ -1,3 +1,4 @@
+/* eslint-disable react-refresh/only-export-components */
 // src/main.jsx
 import ReactDOMClient from "react-dom/client";
 import { useEffect } from "react";

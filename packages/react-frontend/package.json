@@ -8,7 +8,7 @@
     "build": "vite build",
     "lint": "npx eslint && npx prettier --check .",
     "preview": "vite preview",
-    "test": "jest --stack-trace-limit=3"
+    "test": "jest --stack-trace-limit=3 --coverage --passWithNoTests=1"
   },
   "dependencies": {
     "react": "^18.3.1",
