@@ -8,17 +8,14 @@ import jest from "eslint-plugin-jest";
 export default [
   { ignores: ["dist", "coverage"] },
   {
-    env: {
-      browser: true,
-      node: true,
-      jest: true, // Enables globals like `global`, `describe`, `it`, etc.
-    },
-  },
-  {
     files: ["**/*.{js,jsx}"],
     languageOptions: {
       ecmaVersion: 2020,
-      globals: globals.browser,
+      globals: {
+        ...globals.browser,
+        ...globals.node,
+        ...globals.jest,
+      },
       parserOptions: {
         ecmaVersion: "latest",
         ecmaFeatures: { jsx: true },

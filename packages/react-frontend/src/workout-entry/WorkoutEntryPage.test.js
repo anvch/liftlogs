@@ -1,4 +1,6 @@
 /* eslint-disable react/display-name */
+/* eslint-disable no-unused-vars */
+/* eslint-disable jest/no-disabled-tests */
 import React from "react";
 import {
   render,
