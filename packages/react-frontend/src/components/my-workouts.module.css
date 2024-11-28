@@ -4,3 +4,10 @@
   display: grid;
   place-items: center;
 }
+
+.workoutList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  justify-content: center;
+}
