@@ -165,7 +165,7 @@ function WorkoutEntryPage() {
   );
 
   const renderPresetDetails = () => {
-    const selectedPreset = presets.find((p) => p.name === preset);
+    const selectedPreset = presets.find((p) => p.workoutId === preset);
 
     if (!selectedPreset) return null;
 
@@ -212,7 +212,7 @@ function WorkoutEntryPage() {
             Edit
           </button>
           <button
-            onClick={() => handleRemovePreset(selectedPreset.name)}
+            onClick={() => handleRemovePreset(selectedPreset.workoutId)}
             className={`${styles.button} ${styles.removeButton}`}
           >
             Delete
@@ -239,7 +239,7 @@ function WorkoutEntryPage() {
             resetForm();
           } else {
             const selectedPreset = presets.find(
-              (p) => p.name === selectedValue,
+              (p) => p.workoutId === selectedValue,
             );
             if (selectedPreset) {
               setIsEditing(false);
