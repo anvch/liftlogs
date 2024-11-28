@@ -1,10 +1,11 @@
-const BASE_URL =
-  import.meta.env.VITE_BACKEND_HOST ||
-  "https://sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net";
+
 export const AuthService = {
+  BASE_URL:
+  import.meta.env.VITE_BACKEND_HOST || "https://sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net",
+
   async login(username, pwd) {
     try {
-      const response = await fetch(`${BASE_URL}/login`, {
+      const response = await fetch(`${this.BASE_URL}/login`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -26,7 +27,7 @@ export const AuthService = {
 
   async register(username, pwd) {
     try {
-      const response = await fetch(`${BASE_URL}/signup`, {
+      const response = await fetch(`${this.BASE_URL}/signup`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

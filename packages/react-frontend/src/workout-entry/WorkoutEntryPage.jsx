@@ -13,9 +13,11 @@ import { WorkoutService } from "../services/workout.service";
 */
 
 function WorkoutEntryPage() {
+  const weightType = "weights";
+  const cardioType = "cardio";
   const [preset, setPreset] = useState("");
   const [name, setName] = useState("");
-  const [workoutType, setWorkoutType] = useState("Weights");
+  const [workoutType, setWorkoutType] = useState(weightType);
   const [sets, setSets] = useState([]);
   const [reps, setReps] = useState("");
   const [weight, setWeight] = useState("");
@@ -25,6 +27,8 @@ function WorkoutEntryPage() {
   const [isEditing, setIsEditing] = useState(true);
   const [createPreset, setCreatePreset] = useState(false);
   const [date, setDate] = useState(() => new Date().toISOString().split("T")[0]);
+
+
 
   useEffect(() => {
     const fetchPresets = async () => {
@@ -61,18 +65,19 @@ function WorkoutEntryPage() {
       const newWorkoutData = {
         name: name || "Unnamed Workout",
         workoutType: workoutType.toLowerCase(),
-        dateCreated: date,
+        dateCreated: new Date().toISOString().split("T")[0],
         isPreset: createPreset,
-      }
+      };
 
       // some data depends on the type of workout
-      if (workoutType === "Weights") {
+      if (workoutType === weightType) {
         newWorkoutData.sets = sets;
-      } else if (workoutType === "Cardio") {
+      } else if (workoutType === cardioType) {
         newWorkoutData.distance = parseFloat(distance);
         newWorkoutData.time = parseFloat(time);
       }
 
+      console.log(newWorkoutData);
       // now to handle what happens to the data when submitting.
       // we are either using an unedited preset, modifying a preset,
       // or making a brand new workout
@@ -120,7 +125,7 @@ function WorkoutEntryPage() {
   const resetForm = () => {
     setPreset("");
     setName("");
-    setWorkoutType("Weights");
+    setWorkoutType(weightType);
     setSets([]);
     setReps("");
     setWeight("");
@@ -179,7 +184,7 @@ function WorkoutEntryPage() {
         <p>
           <strong>Type:</strong> {selectedPreset.workoutType}
         </p>
-        {selectedPreset.workoutType === "Weights" && (
+        {selectedPreset.workoutType === weightType && (
           <ul>
             {selectedPreset.sets.map((set, index) => (
               <li key={index}>
@@ -188,7 +193,7 @@ function WorkoutEntryPage() {
             ))}
           </ul>
         )}
-        {selectedPreset.workoutType === "Cardio" && (
+        {selectedPreset.workoutType === cardioType && (
           <p>
             Distance: {selectedPreset.distance}, Time: {selectedPreset.time}
           </p>
@@ -274,9 +279,9 @@ function WorkoutEntryPage() {
           <input
             id="weights-radio"
             type="radio"
-            value="Weights"
-            checked={workoutType === "Weights"}
-            onChange={() => setWorkoutType("Weights")}
+            value={weightType}
+            checked={workoutType === weightType}
+            onChange={() => setWorkoutType(weightType)}
           />
           Weights
         </label>
@@ -284,9 +289,9 @@ function WorkoutEntryPage() {
           <input
             id="cardio-radio"
             type="radio"
-            value="Cardio"
-            checked={workoutType === "Cardio"}
-            onChange={() => setWorkoutType("Cardio")}
+            value={cardioType}
+            checked={workoutType === cardioType}
+            onChange={() => setWorkoutType(cardioType)}
           />
           Cardio
         </label>
@@ -376,8 +381,8 @@ function WorkoutEntryPage() {
   const renderSubmitButton = () => {
     const isDisabled =
       (isEditing &&
-        ((workoutType === "Weights" && sets.length === 0) ||
-          (workoutType === "Cardio" && (!distance || !time)))) ||
+        ((workoutType === weightType && sets.length === 0) ||
+          (workoutType === cardioType && (!distance || !time)))) ||
       (!isEditing && !preset);
 
     return (
@@ -431,8 +436,8 @@ function WorkoutEntryPage() {
             </label>
             {renderDateSelector()}
             {renderWorkoutTypeSelector()}
-            {workoutType === "Weights" && renderWeightsInput()}
-            {workoutType === "Cardio" && renderCardioInput()}
+            {workoutType === weightType && renderWeightsInput()}
+            {workoutType === cardioType && renderCardioInput()}
             {renderSubmitButton()}
           </div>
         ) : (

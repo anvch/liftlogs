@@ -59,9 +59,9 @@ router.get("/workouts/:id", async (req, res) => {
  */
 router.post("/workouts", async (req, res) => {
   try {
-    const { type, name, sets, distance, time, isPreset } = req.body;
+    const { workoutType, name, sets, distance, time, isPreset } = req.body;
 
-    if (!type || !name) {
+    if (!workoutType || !name) {
       console.warn(
         "Workout creation failed due to missing type or name in request body.",
       );
@@ -70,7 +70,7 @@ router.post("/workouts", async (req, res) => {
         .json({ error: "Workout type and name are required." });
     }
 
-    const workoutData = { type, name, sets, distance, time, isPreset };
+    const workoutData = { workoutType, name, sets, distance, time, isPreset };
     const newWorkout = await WorkoutModel.createWorkout(
       req.user.username,
       workoutData,
@@ -213,20 +213,19 @@ router.get("/calendar/:year/:month/:day", async (req, res) => {
 router.post("/calendar/:year/:month/:day", async (req, res) => {
   try {
     const { year, month, day } = req.params;
-    const { exercises } = req.body;
-
-    if (!Array.isArray(exercises) || exercises.length === 0) {
+    const { workouts } = req.body;
+    if (!Array.isArray(workouts) || workouts.length === 0) {
       console.warn(
-        "Failed to add workouts to calendar: Exercises array is missing or empty.",
+        "Failed to add workouts to calendar: Workouts array is missing or empty.",
       );
-      return res.status(400).json({ error: "Exercises array is required." });
+      return res.status(400).json({ error: "Workouts array is required." });
     }
 
     const date = `${year}-${month.padStart(2, "0")}-${day.padStart(2, "0")}`;
     const result = await WorkoutModel.addToCalendar(
       req.user.username,
       date,
-      exercises,
+      workouts,
     );
 
     res.status(201).json(result);
