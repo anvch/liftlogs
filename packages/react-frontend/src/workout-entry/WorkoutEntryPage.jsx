@@ -26,16 +26,18 @@ function WorkoutEntryPage() {
   const [createPreset, setCreatePreset] = useState(false);
   const [date, setDate] = useState(() => new Date().toISOString().split("T")[0]);
 
-  // Load presets from localStorage on component mount
   useEffect(() => {
-    const savedPresets = JSON.parse(localStorage.getItem("presets")) || [];
-    setPresets(savedPresets);
-  }, []);
+    const fetchPresets = async () => {
+      try {
+        const data = await WorkoutService.getPresets();
+        setPresets(data);
+      } catch (error) {
+        console.error("Error fetching presets:", error);
+      }
+    };
 
-  // Save presets to localStorage whenever presets change
-  useEffect(() => {
-    localStorage.setItem("presets", JSON.stringify(presets));
-  }, [presets]);
+    fetchPresets();
+  }, []);
 
   useEffect(() => {
     if (!name) {
@@ -51,36 +53,68 @@ function WorkoutEntryPage() {
     }
   };
 
-  const handleSubmit = () => {
-    const newWorkout = {
-      name: name || "Unnamed Workout",
-      workoutType,
-      sets,
-      distance,
-      time,
-      date,
-    };
+  const handleSubmit = async () => {
+    try {
+      let workoutId;
 
-    if (createPreset && name) {
-      const existingIndex = presets.findIndex(
-        (p) => p.name === newWorkout.name,
-      );
+      // Construct the newWorkoutData object
+      const newWorkoutData = {
+        name: name || "Unnamed Workout",
+        workoutType: workoutType.toLowerCase(),
+        dateCreated: date,
+        isPreset: createPreset,
+      }
 
-      if (existingIndex !== -1) {
-        if (
-          window.confirm("A preset with this name already exists. Overwrite?")
-        ) {
-          const updatedPresets = [...presets];
-          updatedPresets[existingIndex] = newWorkout;
-          setPresets(updatedPresets);
+      // some data depends on the type of workout
+      if (workoutType === "Weights") {
+        newWorkoutData.sets = sets;
+      } else if (workoutType === "Cardio") {
+        newWorkoutData.distance = parseFloat(distance);
+        newWorkoutData.time = parseFloat(time);
+      }
+
+      // now to handle what happens to the data when submitting.
+      // we are either using an unedited preset, modifying a preset,
+      // or making a brand new workout
+      if (preset) {
+        // we are using a preset
+        const selectedPreset = presets.find((p) => p.workoutId === preset);
+        if (!selectedPreset) {
+          console.error("Selected preset not found");
+          return;
+        }
+        // get the preset's workoutID
+        workoutId = selectedPreset.workoutId;
+        if (isEditing && createPreset) {
+          // modifying a preset
+          if (window.confirm("You are making changes to an existing preset. Overwrite?")){
+            await WorkoutService.updateWorkout(workoutId, newWorkoutData);
+          }
+        } else if (isEditing){
+          // not saving as a preset, means just make a new one
+          const newWorkout = await WorkoutService.createWorkout(newWorkoutData);
+          workoutId = newWorkout.workoutId;
         }
       } else {
-        setPresets([...presets, newWorkout]);
+        // we are not using a preset
+        const newWorkout = await WorkoutService.createWorkout(newWorkoutData);
+        workoutId = newWorkout.workoutId;
       }
-    }
 
-    resetForm();
-    setIsEditing(true);
+      // finally, no matter what happened add to the calendar
+      const [year, month, day] = date.split("-").map((val) => parseInt(val, 10));
+      await WorkoutService.addWorkoutsToCalendar(year, month, day, [workoutId]);
+
+      resetForm();
+      setIsEditing(true);
+
+      if (createPreset) {
+        const updatedPresets = await WorkoutService.getPresets();
+        setPresets(updatedPresets);
+      }
+    } catch (error) {
+      console.error("Error submitting workout:", error)
+    }
   };
 
   const resetForm = () => {
