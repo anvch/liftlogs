@@ -1,4 +1,5 @@
 # liftlogs
+
 ## Documentation
 
 - [API Documentation](./docs/api.md)

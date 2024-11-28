@@ -26,9 +26,9 @@ function WorkoutEntryPage() {
   const [presets, setPresets] = useState([]);
   const [isEditing, setIsEditing] = useState(true);
   const [createPreset, setCreatePreset] = useState(false);
-  const [date, setDate] = useState(() => new Date().toISOString().split("T")[0]);
-
-
+  const [date, setDate] = useState(
+    () => new Date().toISOString().split("T")[0],
+  );
 
   useEffect(() => {
     const fetchPresets = async () => {
@@ -92,10 +92,14 @@ function WorkoutEntryPage() {
         workoutId = selectedPreset.workoutId;
         if (isEditing && createPreset) {
           // modifying a preset
-          if (window.confirm("You are making changes to an existing preset. Overwrite?")){
+          if (
+            window.confirm(
+              "You are making changes to an existing preset. Overwrite?",
+            )
+          ) {
             await WorkoutService.updateWorkout(workoutId, newWorkoutData);
           }
-        } else if (isEditing){
+        } else if (isEditing) {
           // not saving as a preset, means just make a new one
           const newWorkout = await WorkoutService.createWorkout(newWorkoutData);
           workoutId = newWorkout.workoutId;
@@ -107,7 +111,9 @@ function WorkoutEntryPage() {
       }
 
       // finally, no matter what happened add to the calendar
-      const [year, month, day] = date.split("-").map((val) => parseInt(val, 10));
+      const [year, month, day] = date
+        .split("-")
+        .map((val) => parseInt(val, 10));
       await WorkoutService.addWorkoutsToCalendar(year, month, day, [workoutId]);
 
       resetForm();
@@ -118,7 +124,7 @@ function WorkoutEntryPage() {
         setPresets(updatedPresets);
       }
     } catch (error) {
-      console.error("Error submitting workout:", error)
+      console.error("Error submitting workout:", error);
     }
   };
 
@@ -142,7 +148,7 @@ function WorkoutEntryPage() {
   const handleRemovePreset = async (workoutId) => {
     if (window.confirm("Are you sure you want to delete this preset?")) {
       try {
-        await WorkoutService.updateWorkout(workoutId, { isPreset: false});
+        await WorkoutService.updateWorkout(workoutId, { isPreset: false });
 
         const updatedPresets = await WorkoutService.getPresets();
         setPresets(updatedPresets);

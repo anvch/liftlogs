@@ -1,7 +1,7 @@
-
 export const AuthService = {
   BASE_URL:
-  import.meta.env.VITE_BACKEND_HOST || "https://sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net",
+    import.meta.env.VITE_BACKEND_HOST ||
+    "https://sweaty-e8f6brd2c0feb2bq.westus-01.azurewebsites.net",
 
   async login(username, pwd) {
     try {
