@@ -134,11 +134,18 @@ function WorkoutEntryPage() {
     setSets(updatedSets);
   };
 
-  const handleRemovePreset = (name) => {
+  const handleRemovePreset = async (workoutId) => {
     if (window.confirm("Are you sure you want to delete this preset?")) {
-      setPresets(presets.filter((preset) => preset.name !== name));
-      setPreset("");
-      setIsEditing(true);
+      try {
+        await WorkoutService.updateWorkout(workoutId, { isPreset: false});
+
+        const updatedPresets = await WorkoutService.getPresets();
+        setPresets(updatedPresets);
+        setPreset("");
+        setIsEditing(true);
+      } catch (error) {
+        console.error("Error removing preset:", error);
+      }
     }
   };
 
@@ -236,7 +243,7 @@ function WorkoutEntryPage() {
             );
             if (selectedPreset) {
               setIsEditing(false);
-              setCreatePreset(false);
+              setCreatePreset(true);
               setName(selectedPreset.name);
               setWorkoutType(selectedPreset.workoutType);
               setSets(selectedPreset.sets || []);
@@ -249,7 +256,7 @@ function WorkoutEntryPage() {
       >
         <option value="">No Preset (Add New)</option>
         {presets.map((p, index) => (
-          <option key={index} value={p.name}>
+          <option key={index} value={p.workoutId}>
             {p.name}
           </option>
         ))}
