@@ -11,7 +11,7 @@ export async function createWorkout(username, workoutData) {
   const isPreset = workoutData.isPreset || false; // Default to false
 
   let formattedWorkout;
-  if (workoutData.type === "strength") {
+  if (workoutData.type === "weights") {
     formattedWorkout = {
       name: workoutData.name,
       workoutType: "weights",

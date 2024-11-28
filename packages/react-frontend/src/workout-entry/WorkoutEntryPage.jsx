@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import styles from "./workout-entry.module.css";
 import Background from "../components/Background";
 import HomeIcon from "../assets/home.svg";
+import { WorkoutService } from "../services/workout.service";
 
 /* TODO:
   - make preset creation optional rather than automatic (checkbox style)
@@ -23,6 +24,7 @@ function WorkoutEntryPage() {
   const [presets, setPresets] = useState([]);
   const [isEditing, setIsEditing] = useState(true);
   const [createPreset, setCreatePreset] = useState(false);
+  const [date, setDate] = useState(() => new Date().toISOString().split("T")[0]);
 
   // Load presets from localStorage on component mount
   useEffect(() => {
@@ -34,6 +36,12 @@ function WorkoutEntryPage() {
   useEffect(() => {
     localStorage.setItem("presets", JSON.stringify(presets));
   }, [presets]);
+
+  useEffect(() => {
+    if (!name) {
+      setCreatePreset(false);
+    }
+  }, [name]);
 
   const handleAddSet = () => {
     if (reps > 0 && weight > 0) {
@@ -50,6 +58,7 @@ function WorkoutEntryPage() {
       sets,
       distance,
       time,
+      date,
     };
 
     if (createPreset && name) {
@@ -83,6 +92,7 @@ function WorkoutEntryPage() {
     setWeight("");
     setDistance("");
     setTime("");
+    setDate(new Date().toISOString().split("T")[0]);
   };
 
   const handleRemoveSet = (index) => {
@@ -98,6 +108,21 @@ function WorkoutEntryPage() {
     }
   };
 
+  const renderDateSelector = () => (
+    <div>
+      <label htmlFor="date-input" className={styles.label}>
+        Date:
+      </label>
+      <input
+        id="date-input"
+        type="date"
+        value={date}
+        onChange={(e) => setDate(e.target.value)}
+        className={styles.input}
+      />
+    </div>
+  );
+
   const renderPresetDetails = () => {
     const selectedPreset = presets.find((p) => p.name === preset);
 
@@ -109,6 +134,7 @@ function WorkoutEntryPage() {
         <p data-testid="preset-name">
           <strong>Name:</strong> {selectedPreset.name}
         </p>
+        {renderDateSelector()}
         <p>
           <strong>Type:</strong> {selectedPreset.workoutType}
         </p>
@@ -133,6 +159,7 @@ function WorkoutEntryPage() {
           <button
             onClick={() => {
               setIsEditing(true);
+              setCreatePreset(true);
               setName(selectedPreset.name);
               setWorkoutType(selectedPreset.workoutType);
               setSets(selectedPreset.sets || []);
@@ -170,7 +197,18 @@ function WorkoutEntryPage() {
             setIsEditing(true);
             resetForm();
           } else {
-            setIsEditing(false);
+            const selectedPreset = presets.find(
+              (p) => p.name === selectedValue,
+            );
+            if (selectedPreset) {
+              setIsEditing(false);
+              setCreatePreset(false);
+              setName(selectedPreset.name);
+              setWorkoutType(selectedPreset.workoutType);
+              setSets(selectedPreset.sets || []);
+              setDistance(selectedPreset.distance || "");
+              setTime(selectedPreset.time || "");
+            }
           }
         }}
         className={styles.select}
@@ -312,8 +350,6 @@ function WorkoutEntryPage() {
     );
   };
 
-  // TODO: add a button on the top right of the container to return home
-  // use ../assets/home.svg as the button's picture
   return (
     <div className="wrapper">
       <Background />
@@ -352,6 +388,7 @@ function WorkoutEntryPage() {
               />
               Save as Preset
             </label>
+            {renderDateSelector()}
             {renderWorkoutTypeSelector()}
             {workoutType === "Weights" && renderWeightsInput()}
             {workoutType === "Cardio" && renderCardioInput()}
