@@ -48,7 +48,7 @@ function Home() {
       </div>
       <br></br>
       <br></br>
-      <MyWorkouts presets={presets || []}></MyWorkouts>
+      <MyWorkouts title="My Workouts" presets={presets || []}></MyWorkouts>
     </div>
   );
 }

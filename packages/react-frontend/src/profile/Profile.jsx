@@ -71,7 +71,7 @@ function Profile() {
     const fetchWorkouts = async () => {
       try {
         const currentYear = new Date().getFullYear();
-        const currentMonth = new Date().getMonth() + 1; // +1 bc months are 0-indexed in JS
+        const currentMonth = new Date().getMonth() + 1; // +1 because months are 0-indexed in JS
 
         const data = await WorkoutService.getWorkoutsForMonth(
           currentYear,
@@ -82,15 +82,39 @@ function Profile() {
         const streakCount = calculateStreak(data);
         setStreak(streakCount);
 
-        // flatten workouts data to get array of just workouts
+        // flatten workouts data to get an array of just workouts and attach the date to each workout
         const flattenedWorkouts = data
           .sort((a, b) => new Date(b.date) - new Date(a.date))
-          .flatMap((day) => day.workouts)
+          .flatMap((day) =>
+            day.workouts.map((workout) => ({
+              ...workout,
+              date: day.date, // attach the date from the day object to each workout
+            })),
+          )
           .slice(0, 5);
 
-        setTotalWorkouts(flattenedWorkouts.length);
+        const workoutsWithDate = flattenedWorkouts.map((workoutData) => {
+          const workoutDate = new Date(workoutData.date);
+          if (isNaN(workoutDate)) {
+            console.warn(`Invalid date: ${workoutData.date}`);
+            return {
+              ...workoutData,
+              name: `${workoutData.name} (Invalid Date)`,
+            };
+          }
+          // add 1 day to date bc of error getting date (1 day behind)
+          workoutDate.setDate(workoutDate.getDate() + 1);
+          // format date
+          const workoutDateString = workoutDate.toLocaleDateString("en-US");
 
-        setWorkouts(flattenedWorkouts);
+          return {
+            ...workoutData,
+            name: `${workoutData.name} (${workoutDateString})`, // add date to workout name
+          };
+        });
+
+        setTotalWorkouts(flattenedWorkouts.length);
+        setWorkouts(workoutsWithDate);
       } catch (error) {
         console.error("Error fetching workouts for the month:", error);
       }
@@ -131,6 +155,7 @@ function Profile() {
       </div>
       <MyWorkouts
         className={styles.myworkouts}
+        title="Recent Workouts"
         presets={workouts || []}
       ></MyWorkouts>
       <br />

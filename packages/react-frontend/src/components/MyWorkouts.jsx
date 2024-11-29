@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import WorkoutCard from "../components/WorkoutCard";
 import styles from "./my-workouts.module.css";
 
-function MyWorkouts({ presets }) {
+function MyWorkouts({ title, presets }) {
   // format description based on workout type/fields
   const getDescription = (workout) => {
     if (workout.distance && workout.time) {
@@ -26,7 +26,7 @@ function MyWorkouts({ presets }) {
   return (
     <div className="container">
       <div className={styles.myworkouts}>
-        <h2>My Workouts</h2>
+        <h2>{title}</h2>
         <Link to="/workout-entry">
           <button> + Add Workout</button>
         </Link>
