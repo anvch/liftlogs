@@ -14,7 +14,11 @@ function DateDetail() {
     const fetchWorkouts = async () => {
       try {
         const parsedDate = date.split("-");
-        const data = await WorkoutService.getWorkoutsByDate(parsedDate[0], parsedDate[1], parsedDate[2]);
+        const data = await WorkoutService.getWorkoutsByDate(
+          parsedDate[0],
+          parsedDate[1],
+          parsedDate[2],
+        );
         setWorkouts(data.workouts);
         console.log("Workouts fetched:", workouts);
       } catch (error) {
@@ -26,7 +30,7 @@ function DateDetail() {
   }, []);
 
   return (
-    <div className={styles.date}>
+    <div className="container">
       <Background />
       <h2 className={styles.title}>Workout: {date}</h2>
       <Link to="/home">
@@ -35,7 +39,9 @@ function DateDetail() {
       {workouts.map((workout, index) => {
         return <WorkoutDetail key={index} workout={workout} />;
       })}
-      <button className={`container ${styles.editButton}`}>Edit</button>
+      {workouts.length != 0 && (
+        <button className={`container ${styles.editButton}`}>Edit</button>
+      )}
     </div>
   );
 }

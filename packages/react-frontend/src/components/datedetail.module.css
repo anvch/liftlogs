@@ -16,8 +16,8 @@
 }
 
 .editButton {
-  position: absolute;
-  right: 48px;
+  position: relative;
+  left: 290px;
 }
 
 .homeicon {
