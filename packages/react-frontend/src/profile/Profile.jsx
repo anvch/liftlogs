@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
-import { useContext, useState, useEffect } from "react";
+import { useContext, useCallback, useState, useEffect } from "react";
 import { UserContext } from "../contexts/UserContext";
 import { WorkoutService } from "../services/workout.service";
 import MyWorkouts from "../components/MyWorkouts";
@@ -15,7 +15,25 @@ function Profile() {
   const [streak, setStreak] = useState(0); // State for workout streak
   const [totalWorkouts, setTotalWorkouts] = useState(0);
 
-  const calculateStreak = (workoutsData) => {
+  const calculateStreak = useCallback((workoutsData) => {
+    // normalize dates to midnight
+    const normalizeDate = (date) => {
+      const normalized = new Date(date);
+      normalized.setHours(0, 0, 0, 0);
+      return normalized;
+    };
+
+    const isSameDay = (date1, date2) => {
+      // to avoid considering time
+      const d1 = normalizeDate(date1);
+      const d2 = normalizeDate(date2);
+      return (
+        d1.getDate() === d2.getDate() &&
+        d1.getMonth() === d2.getMonth() &&
+        d1.getFullYear() === d2.getFullYear()
+      );
+    };
+
     console.log("Raw workoutsData:", workoutsData);
 
     const currentDate = new Date();
@@ -47,25 +65,7 @@ function Profile() {
     }
 
     return streakCount;
-  };
-
-  // normalize dates to midnight
-  const normalizeDate = (date) => {
-    const normalized = new Date(date);
-    normalized.setHours(0, 0, 0, 0);
-    return normalized;
-  };
-
-  const isSameDay = (date1, date2) => {
-    // to avoid considering time
-    const d1 = normalizeDate(date1);
-    const d2 = normalizeDate(date2);
-    return (
-      d1.getDate() === d2.getDate() &&
-      d1.getMonth() === d2.getMonth() &&
-      d1.getFullYear() === d2.getFullYear()
-    );
-  };
+  }, []);
 
   useEffect(() => {
     const fetchWorkouts = async () => {
@@ -121,7 +121,7 @@ function Profile() {
     };
 
     fetchWorkouts();
-  }, []);
+  }, [calculateStreak]);
 
   const handleLogout = () => {
     logout(); // Call the logout function
