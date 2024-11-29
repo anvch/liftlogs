@@ -1,33 +1,29 @@
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router-dom";
 import WorkoutDetail from "./WorkoutDetail";
 import Background from "./Background";
 import homeIcon from "../assets/home.svg";
 import styles from "./datedetail.module.css";
+import { WorkoutService } from "../services/workout.service";
 
 function DateDetail() {
   const { date } = useParams();
+  const [workouts, setWorkouts] = useState([]);
 
-  const tempWeights = {
-    name: "Temp Workout",
-    workoutType: "weights",
-    sets: [
-      { reps: 10, weight: 100 },
-      { reps: 15, weight: 100 },
-      { reps: 5, weight: 100 },
-    ],
-  };
+  useEffect(() => {
+    const fetchWorkouts = async () => {
+      try {
+        const parsedDate = date.split("-");
+        const data = await WorkoutService.getWorkoutsByDate(parsedDate[0], parsedDate[1], parsedDate[2]);
+        setWorkouts(data.workouts);
+        console.log("Workouts fetched:", workouts);
+      } catch (error) {
+        console.error("Error fetching presets:", error);
+      }
+    };
 
-  const tempCardio = {
-    name: "Temp Workout2",
-    workoutType: "cardio",
-    distance: 5,
-    time: 40,
-  };
-
-  const tempToday = {
-    date: "2024-11-15",
-    exercise: [tempWeights, tempCardio, tempWeights],
-  };
+    fetchWorkouts();
+  }, []);
 
   return (
     <div>
@@ -36,7 +32,7 @@ function DateDetail() {
       <Link to="/home">
         <img className={styles.homeicon} src={homeIcon} alt="Home" />
       </Link>
-      {tempToday.exercise.map((workout, index) => {
+      {workouts.map((workout, index) => {
         return <WorkoutDetail key={index} workout={workout} />;
       })}
       <button className={`container ${styles.editButton}`}>Edit</button>
