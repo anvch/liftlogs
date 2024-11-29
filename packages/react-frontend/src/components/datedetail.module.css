@@ -6,7 +6,6 @@
 .title {
   color: white;
   padding: 10px;
-  margin-left: 20px;
 }
 
 .homeButton {
@@ -30,7 +29,6 @@
     transform 0.2s ease,
     opacity 0.2s ease; /* Optional: hover effect */
   position: relative;
-  right: 15px;
   top: -58px;
 }
 
