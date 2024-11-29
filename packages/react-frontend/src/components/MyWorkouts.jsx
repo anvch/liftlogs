@@ -30,6 +30,7 @@ function MyWorkouts({ presets }) {
         <Link to="/workout-entry">
           <button> + Add Workout</button>
         </Link>
+        <br></br>
         <div className={styles.workoutList}>
           {presets.length > 0 ? (
             presets.map((workout, index) => (
