@@ -26,7 +26,7 @@ function DateDetail() {
   }, []);
 
   return (
-    <div>
+    <div className={styles.date}>
       <Background />
       <h2 className={styles.title}>Workout: {date}</h2>
       <Link to="/home">
