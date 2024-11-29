@@ -7,9 +7,17 @@ function MyWorkouts({ presets }) {
   // format description based on workout type/fields
   const getDescription = (workout) => {
     if (workout.distance && workout.time) {
-      return `Distance: ${workout.distance}, Time: ${workout.time} mins`;
-    } else if (workout.sets) {
-      return `Sets: ${workout.sets}`;
+      return `Distance: ${workout.distance} mile(s), Time: ${workout.time} min(s)`;
+    } else if (workout.sets && Array.isArray(workout.sets)) {
+      return (
+        <div>
+          {workout.sets.map((set, index) => (
+            <div key={index}>
+              Set {index + 1}: {set.reps} reps @ {set.weight} lbs
+            </div>
+          ))}
+        </div>
+      );
     } else {
       return "No additional details available";
     }
