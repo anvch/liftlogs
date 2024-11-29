@@ -1,6 +1,5 @@
 /* eslint-disable react/display-name */
 /* eslint-disable no-unused-vars */
-/* eslint-disable jest/no-disabled-tests */
 import React from "react";
 import {
   render,
@@ -160,10 +159,10 @@ describe("WorkoutEntryPage Component with Mocked API", () => {
     });
 
     // Input distance and time
-    fireEvent.change(screen.getByLabelText(/Distance:/i), {
+    fireEvent.change(screen.getByLabelText(/Distance \(miles\):/i), {
       target: { value: "5" },
     });
-    fireEvent.change(screen.getByLabelText(/Time:/i), {
+    fireEvent.change(screen.getByLabelText(/Time \(min\):/i), {
       target: { value: "30" },
     });
 
@@ -320,12 +319,10 @@ describe("WorkoutEntryPage Component with Mocked API", () => {
     });
   });
 
-  test.skip("handles error when selected preset not found", async () => {
+  test("resets the form", async () => {
     WorkoutService.getPresets.mockResolvedValueOnce([]);
     WorkoutService.createWorkout.mockResolvedValueOnce({ workoutId: "123" });
     WorkoutService.addWorkoutsToCalendar.mockResolvedValueOnce();
-
-    console.error = jest.fn();
 
     await act(async () => {
       render(
@@ -335,21 +332,345 @@ describe("WorkoutEntryPage Component with Mocked API", () => {
       );
     });
 
-    // Manually set a non-existent preset
-    await act(async () => {
-      fireEvent.change(screen.getByLabelText(/Choose Preset:/i), {
-        target: { value: "non-existent-id" },
-      });
+    // Fill out the form
+    fireEvent.change(screen.getByLabelText(/Name:/i), {
+      target: { value: "Test Workout" },
+    });
+    fireEvent.change(screen.getByLabelText(/Reps:/i), {
+      target: { value: "10" },
+    });
+    fireEvent.change(screen.getByLabelText(/Weight:/i), {
+      target: { value: "50" },
     });
 
-    // Attempt to submit
-    fireEvent.click(screen.getByRole("button", { name: /^Submit$/i }));
+    act(() => fireEvent.click(screen.getByText(/Add Set/i)));
 
-    // Verify error was logged
-    expect(console.error).toHaveBeenCalledWith("Selected preset not found");
+    // Click the reset button (simulate reset logic)
+    act(() => fireEvent.click(screen.getByRole("button", { name: /Submit/i })));
+
+    // Ensure form is reset
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Name:/i).value).toBe("");
+      expect(screen.getByLabelText(/Reps:/i).value).toBe("");
+      expect(screen.getByLabelText(/Weight:/i).value).toBe("");
+      expect(
+        screen.queryByText(/Reps: 10, Weight: 50/i),
+      ).not.toBeInTheDocument();
+    });
   });
 
-  test.skip("prevents submission when required fields are missing", async () => {
+  test("switches between workout types", async () => {
+    WorkoutService.getPresets.mockResolvedValueOnce([]);
+
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <WorkoutEntryPage />
+        </MemoryRouter>,
+      );
+    });
+
+    // Verify Weights input is visible initially
+    expect(screen.getByLabelText(/Reps:/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Weight:/i)).toBeInTheDocument();
+
+    // Switch to Cardio
+    fireEvent.click(screen.getByLabelText(/Cardio/i));
+
+    // Verify Cardio input is visible
+    expect(screen.getByLabelText(/Distance \(miles\):/i)).toBeInTheDocument();
+    expect(screen.getByLabelText(/Time \(min\):/i)).toBeInTheDocument();
+    expect(screen.queryByLabelText(/Reps:/i)).not.toBeInTheDocument();
+  });
+
+  test("deletes all sets", async () => {
+    WorkoutService.getPresets.mockResolvedValueOnce([]);
+
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <WorkoutEntryPage />
+        </MemoryRouter>,
+      );
+    });
+
+    // Add multiple sets
+    fireEvent.change(screen.getByLabelText(/Reps:/i), {
+      target: { value: "10" },
+    });
+    fireEvent.change(screen.getByLabelText(/Weight:/i), {
+      target: { value: "50" },
+    });
+    fireEvent.click(screen.getByText(/Add Set/i));
+
+    fireEvent.change(screen.getByLabelText(/Reps:/i), {
+      target: { value: "12" },
+    });
+    fireEvent.change(screen.getByLabelText(/Weight:/i), {
+      target: { value: "55" },
+    });
+    fireEvent.click(screen.getByText(/Add Set/i));
+
+    // Verify sets are added
+    expect(screen.getByText(/Reps: 10, Weight: 50/i)).toBeInTheDocument();
+    expect(screen.getByText(/Reps: 12, Weight: 55/i)).toBeInTheDocument();
+
+    // Delete each set
+    fireEvent.click(screen.getAllByText("X")[0]);
+    fireEvent.click(screen.getAllByText("X")[0]);
+
+    // Verify all sets are removed
+    await waitFor(() => {
+      expect(
+        screen.queryByText(/Reps: 10, Weight: 50/i),
+      ).not.toBeInTheDocument();
+      expect(
+        screen.queryByText(/Reps: 12, Weight: 55/i),
+      ).not.toBeInTheDocument();
+    });
+  });
+
+  test("submits an existing preset without editing", async () => {
+    const mockPresets = [
+      {
+        workoutId: "1",
+        name: "Preset 1",
+        workoutType: "weights",
+        sets: [{ reps: "10", weight: "50" }],
+        isPreset: true,
+      },
+    ];
+
+    WorkoutService.getPresets.mockResolvedValueOnce(mockPresets);
+    WorkoutService.addWorkoutsToCalendar.mockResolvedValueOnce();
+
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <WorkoutEntryPage />
+        </MemoryRouter>,
+      );
+    });
+
+    // Select the preset
+    const presetSelect = screen.getByLabelText(/Choose Preset:/i);
+    fireEvent.change(presetSelect, { target: { value: "1" } });
+
+    // Verify preset details are loaded
+    expect(await screen.findByText(/Preset Details/i)).toBeInTheDocument();
+    expect(screen.getByText(/Reps: 10, Weight: 50/i)).toBeInTheDocument();
+
+    // Click 'Submit' without editing
+    fireEvent.click(screen.getByText(/^Submit$/i));
+
+    // Verify addWorkoutsToCalendar was called with the preset workoutId
+    await waitFor(() => {
+      expect(WorkoutService.addWorkoutsToCalendar).toHaveBeenCalledWith(
+        expect.any(Number),
+        expect.any(Number),
+        expect.any(Number),
+        ["1"],
+      );
+    });
+
+    // Verify that updateWorkout and createWorkout were not called
+    expect(WorkoutService.updateWorkout).not.toHaveBeenCalled();
+    expect(WorkoutService.createWorkout).not.toHaveBeenCalled();
+  });
+
+  test("selects and edits a preset", async () => {
+    const mockPresets = [
+      {
+        workoutId: "1",
+        name: "Preset 1",
+        workoutType: "weights",
+        sets: [{ reps: "10", weight: "50" }],
+        isPreset: true,
+      },
+    ];
+
+    WorkoutService.getPresets.mockResolvedValueOnce(mockPresets);
+    WorkoutService.updateWorkout.mockResolvedValueOnce();
+    WorkoutService.addWorkoutsToCalendar.mockResolvedValueOnce();
+
+    global.confirm.mockReturnValueOnce(true);
+
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <WorkoutEntryPage />
+        </MemoryRouter>,
+      );
+    });
+
+    // Select the preset
+    const presetSelect = screen.getByLabelText(/Choose Preset:/i);
+    fireEvent.change(presetSelect, { target: { value: "1" } });
+
+    // Verify preset details are loaded
+    expect(await screen.findByText(/Preset Details/i)).toBeInTheDocument();
+    expect(screen.getByText(/Reps: 10, Weight: 50/i)).toBeInTheDocument();
+
+    // Edit the preset
+    fireEvent.click(screen.getByText(/Edit/i));
+    fireEvent.change(screen.getByLabelText(/Name:/i), {
+      target: { value: "Updated Preset" },
+    });
+
+    // Submit the updated preset
+    fireEvent.click(screen.getByRole("button", { name: /^Submit$/i }));
+
+    // Verify updateWorkout was called with updated data
+    await waitFor(() => {
+      expect(WorkoutService.updateWorkout).toHaveBeenCalledWith(
+        "1",
+        expect.objectContaining({
+          name: "Updated Preset",
+          sets: [{ reps: "10", weight: "50" }],
+        }),
+      );
+    });
+  });
+
+  test("creates a new workout and saves as preset", async () => {
+    WorkoutService.getPresets.mockResolvedValueOnce([]);
+    WorkoutService.createWorkout.mockResolvedValueOnce({ workoutId: "789" });
+    WorkoutService.addWorkoutsToCalendar.mockResolvedValueOnce();
+
+    // Mock getPresets to be called again after saving the preset
+    WorkoutService.getPresets.mockResolvedValueOnce([
+      {
+        workoutId: "789",
+        name: "New Preset Workout",
+        workoutType: "weights",
+        sets: [{ reps: "8", weight: "100" }],
+        isPreset: true,
+      },
+    ]);
+
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <WorkoutEntryPage />
+        </MemoryRouter>,
+      );
+    });
+
+    // Input name
+    fireEvent.change(screen.getByLabelText(/Name:/i), {
+      target: { value: "New Preset Workout" },
+    });
+
+    // Enable 'Save as Preset'
+    fireEvent.click(screen.getByLabelText(/Save as Preset/i));
+
+    // Input reps and weight
+    fireEvent.change(screen.getByLabelText(/Reps:/i), {
+      target: { value: "8" },
+    });
+    fireEvent.change(screen.getByLabelText(/Weight:/i), {
+      target: { value: "100" },
+    });
+
+    // Add the set
+    fireEvent.click(screen.getByText(/Add Set/i));
+
+    // Click 'Submit'
+    fireEvent.click(screen.getByRole("button", { name: /^Submit$/i }));
+
+    // Verify createWorkout was called with isPreset: true
+    await waitFor(() => {
+      expect(WorkoutService.createWorkout).toHaveBeenCalledWith(
+        expect.objectContaining({
+          name: "New Preset Workout",
+          workoutType: "weights",
+          sets: [{ reps: "8", weight: "100" }],
+          isPreset: true,
+        }),
+      );
+    });
+
+    // Verify addWorkoutsToCalendar was called
+    expect(WorkoutService.addWorkoutsToCalendar).toHaveBeenCalled();
+
+    // Verify getPresets was called again to update the presets
+    expect(WorkoutService.getPresets).toHaveBeenCalledTimes(2);
+  });
+
+  test("resets the form when switching from preset to 'Add New'", async () => {
+    const mockPresets = [
+      {
+        workoutId: "1",
+        name: "Preset 1",
+        workoutType: "weights",
+        sets: [{ reps: "10", weight: "50" }],
+        isPreset: true,
+      },
+    ];
+
+    WorkoutService.getPresets.mockResolvedValueOnce(mockPresets);
+
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <WorkoutEntryPage />
+        </MemoryRouter>,
+      );
+    });
+
+    // Select the preset
+    const presetSelect = screen.getByLabelText(/Choose Preset:/i);
+    fireEvent.change(presetSelect, { target: { value: "1" } });
+
+    // Verify preset details are loaded
+    expect(await screen.findByText(/Preset Details/i)).toBeInTheDocument();
+
+    // Switch back to 'No Preset (Add New)'
+    fireEvent.change(presetSelect, { target: { value: "" } });
+
+    // Wait for form to reset
+    await waitFor(() => {
+      expect(screen.getByLabelText(/Name:/i).value).toBe("");
+      expect(screen.getByLabelText(/Reps:/i)).toBeInTheDocument();
+      expect(screen.getByLabelText(/Weight:/i)).toBeInTheDocument();
+      expect(screen.queryByText(/Preset Details/i)).not.toBeInTheDocument();
+    });
+  });
+
+  test("selects a cardio preset and displays details", async () => {
+    const mockPresets = [
+      {
+        workoutId: "2",
+        name: "Cardio Preset",
+        workoutType: "cardio",
+        distance: 5,
+        time: 30,
+        isPreset: true,
+      },
+    ];
+
+    WorkoutService.getPresets.mockResolvedValueOnce(mockPresets);
+
+    await act(async () => {
+      render(
+        <MemoryRouter>
+          <WorkoutEntryPage />
+        </MemoryRouter>,
+      );
+    });
+
+    // Select the cardio preset
+    const presetSelect = screen.getByLabelText(/Choose Preset:/i);
+    fireEvent.change(presetSelect, { target: { value: "2" } });
+
+    // Verify preset details are displayed
+    expect(await screen.findByText(/Preset Details/i)).toBeInTheDocument();
+    expect(
+      screen.getByText(/Distance \(miles\): 5, Time \(min\): 30/i),
+    ).toBeInTheDocument();
+  });
+
+  test("prevents submission when required fields are missing", async () => {
     WorkoutService.getPresets.mockResolvedValueOnce([]);
 
     await act(async () => {
@@ -373,7 +694,7 @@ describe("WorkoutEntryPage Component with Mocked API", () => {
     });
 
     // Only input distance
-    fireEvent.change(screen.getByLabelText(/Distance:/i), {
+    fireEvent.change(screen.getByLabelText(/Distance \(miles\):/i), {
       target: { value: "5" },
     });
 
@@ -381,7 +702,7 @@ describe("WorkoutEntryPage Component with Mocked API", () => {
     expect(submitButton).toBeDisabled();
 
     // Input time
-    fireEvent.change(screen.getByLabelText(/Time:/i), {
+    fireEvent.change(screen.getByLabelText(/Time \(min\):/i), {
       target: { value: "30" },
     });
 
