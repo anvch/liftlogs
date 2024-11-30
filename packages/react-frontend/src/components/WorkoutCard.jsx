@@ -7,7 +7,7 @@ function WorkoutCard({ name, type, description }) {
     <div className={styles.card}>
       <h3>{name}</h3>
       <p>Type: {type}</p>
-      <p>Description: {description}</p>
+      <div>{description}</div>
     </div>
   );
 }
