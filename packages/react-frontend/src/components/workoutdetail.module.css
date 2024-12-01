@@ -14,7 +14,7 @@
   border-radius: 5px;
 }
 
-.editicon {
+.icon {
   width: 24px; /* Adjust size as needed */
   height: 24px; /* Match the width for consistency */
   cursor: pointer; /* Makes it feel like a button */
@@ -24,5 +24,12 @@
     transform 0.2s ease,
     opacity 0.2s ease; /* Optional: hover effect */
   position: relative;
+}
+
+.top {
   top: -60px;
+}
+
+.bottom {
+  top: -25px;
 }
