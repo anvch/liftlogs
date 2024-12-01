@@ -20,6 +20,7 @@ function DateDetail() {
           parsedDate[2],
         );
         setWorkouts(data.workouts);
+        console.log(data)
       } catch (error) {
         console.error("Error fetching presets:", error);
       }
