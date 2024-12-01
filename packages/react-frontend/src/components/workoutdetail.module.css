@@ -13,3 +13,16 @@
   box-shadow: var(--glow-color) 0px 0px 12px;
   border-radius: 5px;
 }
+
+.editicon {
+  width: 24px; /* Adjust size as needed */
+  height: 24px; /* Match the width for consistency */
+  cursor: pointer; /* Makes it feel like a button */
+  float: right; /* Aligns the icon to the right */
+  margin: 0 0px 0 0; /* Adds space around the icon, especially on the right */
+  transition:
+    transform 0.2s ease,
+    opacity 0.2s ease; /* Optional: hover effect */
+  position: relative;
+  top: -60px;
+}

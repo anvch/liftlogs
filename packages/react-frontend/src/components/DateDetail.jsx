@@ -20,7 +20,6 @@ function DateDetail() {
           parsedDate[2],
         );
         setWorkouts(data.workouts);
-        console.log(data)
       } catch (error) {
         console.error("Error fetching presets:", error);
       }
@@ -39,9 +38,6 @@ function DateDetail() {
       {workouts.map((workout, index) => {
         return <WorkoutDetail key={index} workout={workout} />;
       })}
-      {workouts.length != 0 && (
-        <button className={`container ${styles.editButton}`}>Edit</button>
-      )}
     </div>
   );
 }
