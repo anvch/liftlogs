@@ -65,7 +65,9 @@ const WorkoutDetail = ({ workout }) => {
   };
 
   return (
-    <div className={`${styles.workout} ${!visible ? styles.hide : ""}`}>
+    <div
+      className={`${styles.workout} ${!visible ? styles.hide : ""} ${editMode ? styles.editWorkout : ""}`}
+    >
       <h3>{workoutData.name}</h3>
       <p>
         Type: {workoutData.workoutType === "weights" ? "Weights" : "Cardio"}
@@ -105,14 +107,14 @@ const WorkoutDetail = ({ workout }) => {
       )}
       {editMode && (
         <div>
+          <img
+            className={`${styles.icon} ${styles.top}`}
+            src={checkIcon}
+            onClick={handleCheck}
+            alt="Check Icon"
+          />
           {workoutData.workoutType == "weights" && (
             <div>
-              <img
-                className={`${styles.icon} ${styles.top}`}
-                src={checkIcon}
-                onClick={handleCheck}
-                alt="Check Icon"
-              />
               <h4>Sets</h4>
               <label className={styles.label} htmlFor="reps-input">
                 Reps:
