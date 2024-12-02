@@ -27,9 +27,13 @@
 }
 
 .top {
-  top: -60px;
+  top: -95px;
 }
 
 .bottom {
   top: -25px;
+}
+
+.hide {
+  visibility: hidden;
 }

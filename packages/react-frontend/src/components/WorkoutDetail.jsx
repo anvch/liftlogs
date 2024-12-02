@@ -1,8 +1,9 @@
 /* eslint-disable react/prop-types */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import editIcon from "../assets/edit.svg";
 import checkIcon from "../assets/check.svg";
 import trashIcon from "../assets/trash.svg";
+import { WorkoutService } from "../services/workout.service.js";
 import styles from "./workoutdetail.module.css";
 
 const WorkoutDetail = ({ workout }) => {
@@ -10,9 +11,41 @@ const WorkoutDetail = ({ workout }) => {
   const [workoutData, setWorkoutData] = useState(workout);
   const [reps, setReps] = useState("");
   const [weight, setWeight] = useState("");
+  const [visible, setVisible] = useState(true);
+
+  useEffect(() => {}, [visible]);
 
   const handleEdit = () => {
     setEditMode(!editMode);
+  };
+
+  const handleCheck = async () => {
+    const newWorkoutData = {
+      name: workoutData.name || "Unnamed Workout",
+      workoutType: workoutData.workoutType.toLowerCase(),
+      dateCreated: new Date().toISOString().split("T")[0],
+      isPreset: workoutData.isPreset,
+    };
+
+    if (workoutData.workoutType === "weights") {
+      newWorkoutData.sets = workoutData.sets;
+    } else if (workoutData.workoutType === "cardio") {
+      newWorkoutData.distance = parseFloat(workoutData.distance);
+      newWorkoutData.time = parseFloat(workoutData.time);
+    }
+
+    try {
+      await WorkoutService.updateWorkout(workoutData.workoutId, newWorkoutData);
+    } catch (error) {
+      console.error(error);
+    }
+    setEditMode(!editMode);
+  };
+
+  const handleTrash = async () => {
+    const result = await WorkoutService.deleteWorkout(workoutData.workoutId);
+    setVisible(false);
+    console.log(result);
   };
 
   const handleAddSet = () => {
@@ -32,19 +65,19 @@ const WorkoutDetail = ({ workout }) => {
   };
 
   return (
-    <div className={styles.workout}>
+    <div className={`${styles.workout} ${!visible ? styles.hide : ""}`}>
       <h3>{workoutData.name}</h3>
-      <img
-        className={`${styles.icon} ${styles.top}`}
-        src={editMode ? checkIcon : editIcon}
-        onClick={handleEdit}
-        alt="Edit or Check Icon"
-      />
       <p>
         Type: {workoutData.workoutType === "weights" ? "Weights" : "Cardio"}
       </p>
       {!editMode && (
         <div>
+          <img
+            className={`${styles.icon} ${styles.top}`}
+            src={editIcon}
+            onClick={handleEdit}
+            alt="Edit Icon"
+          />
           {workoutData.workoutType === "weights" ? (
             <div>
               <p>
@@ -74,6 +107,12 @@ const WorkoutDetail = ({ workout }) => {
         <div>
           {workoutData.workoutType == "weights" && (
             <div>
+              <img
+                className={`${styles.icon} ${styles.top}`}
+                src={checkIcon}
+                onClick={handleCheck}
+                alt="Check Icon"
+              />
               <h4>Sets</h4>
               <label className={styles.label} htmlFor="reps-input">
                 Reps:
@@ -127,7 +166,10 @@ const WorkoutDetail = ({ workout }) => {
                 type="number"
                 value={workoutData.distance}
                 onChange={(e) =>
-                  setWorkoutData({ ...workoutData, distance: e.target.value })
+                  setWorkoutData({
+                    ...workoutData,
+                    distance: e.target.value,
+                  })
                 }
                 className={styles.input}
               />
@@ -149,6 +191,7 @@ const WorkoutDetail = ({ workout }) => {
             className={`${styles.icon} ${styles.bottom}`}
             src={trashIcon}
             alt="Trash Icon"
+            onClick={handleTrash}
           />
         </div>
       )}
