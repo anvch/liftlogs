@@ -20,7 +20,7 @@ function WorkoutCalendar() {
           return acc;
         }, {});
         setWorkoutData(dataByDate);
-        console.log(dataByDate)
+        console.log(dataByDate);
       } catch (error) {
         console.error("Error fetching workouts:", error);
       }

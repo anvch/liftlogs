@@ -61,7 +61,7 @@ function WorkoutEntryPage() {
         dateCreated: new Date().toISOString().split("T")[0],
         isPreset: createPreset,
       };
-    
+
       // some data depends on the type of workout
       if (workoutType === weightType) {
         newWorkoutData.sets = sets;
