@@ -10,7 +10,8 @@
     "format": "prettier --write './**/*.{js,jsx,ts,tsx,css,md,json}' --config ./.prettierrc",
     "start:backend": "node packages/workout-backend/src/server.js",
     "dev:backend": "nodemon packages/workout-backend/src/server.js",
-    "lint": "npm run lint --workspaces"
+    "lint": "npm run lint --workspaces",
+    "short": "npm run dev --workspaces"
   },
   "author": "",
   "license": "ISC",

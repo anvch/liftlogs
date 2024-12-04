@@ -1,7 +1,11 @@
+.date {
+  max-width: 400px;
+  margin: auto;
+}
+
 .title {
   color: white;
   padding: 10px;
-  margin-left: 20px;
 }
 
 .homeButton {
@@ -11,8 +15,8 @@
 }
 
 .editButton {
-  position: absolute;
-  right: 48px;
+  position: relative;
+  left: 320px;
 }
 
 .homeicon {
@@ -24,9 +28,8 @@
   transition:
     transform 0.2s ease,
     opacity 0.2s ease; /* Optional: hover effect */
-  position: absolute;
-  right: 20px;
-  top: 30px;
+  position: relative;
+  top: -58px;
 }
 
 .homeicon:hover {
