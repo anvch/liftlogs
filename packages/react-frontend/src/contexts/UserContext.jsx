@@ -14,6 +14,7 @@ export const UserProvider = ({ children }) => {
   useEffect(() => {
     const checkAuth = async () => {
       const token = AuthService.getToken();
+      console.log("attempting to recall token...", token);
       if (token) {
         try {
           // Assuming the username is stored locally or available in the token payload

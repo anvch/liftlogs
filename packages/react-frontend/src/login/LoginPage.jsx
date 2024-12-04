@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react"; // eslint-disable-line no-unused-vars
+import React, { useState, useContext, useEffect } from "react"; // eslint-disable-line no-unused-vars
 import { useNavigate, useLocation } from "react-router-dom";
 import { UserContext } from "../contexts/UserContext";
 import styles from "./login.module.css";
@@ -11,9 +11,21 @@ function LoginPage() {
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const { login, register } = useContext(UserContext); // Use context functions
+  const {
+    user,
+    login,
+    register,
+    loading: userLoading,
+  } = useContext(UserContext); // Use context functions
   const navigate = useNavigate();
   const location = useLocation();
+
+  useEffect(() => {
+    if (!userLoading && user) {
+      const from = location.state?.from?.pathname || "/home";
+      navigate(from, { replace: true });
+    }
+  }, [user, userLoading, navigate, location.state]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
