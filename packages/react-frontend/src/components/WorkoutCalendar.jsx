@@ -59,6 +59,7 @@ function WorkoutCalendar() {
     if (count > 0) {
       return (
         <div
+          title={`${count} workout${count > 1 ? "s" : ""}`}
           style={{
             backgroundColor: getTileColor(count),
             width: "100%",
