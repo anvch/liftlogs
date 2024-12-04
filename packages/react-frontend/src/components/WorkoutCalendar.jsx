@@ -76,6 +76,7 @@ function WorkoutCalendar() {
   // otherwise could use setter directly.
   const onActiveDateChange = ({ activeStartDate }) => {
     setActiveStartDate(activeStartDate); // Properly use activeStartDate
+  };
 
   const handleDateClick = (date) => {
     const formattedDate = date.toISOString().split("T")[0]; // Format to YYYY-MM-DD
