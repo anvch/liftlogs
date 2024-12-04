@@ -79,9 +79,7 @@ export async function addToCalendar(username, date, workoutIds) {
   const existingEntryResult = await dynamoDB.get(existingEntryParams).promise();
   const existingEntry = existingEntryResult.Item;
   if (existingEntry) {
-    const updatedWorkouts = [
-      ...new Set([...existingEntry.workouts, ...workoutIds]),
-    ]; // Avoid duplicates
+    const updatedWorkouts = [...existingEntry.workouts, ...workoutIds];
 
     const updateParams = {
       TableName: TABLE_NAME,
