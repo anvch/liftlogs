@@ -19,7 +19,10 @@ function WorkoutCalendar() {
         const year = activeStartDate.getFullYear();
         const month = activeStartDate.getMonth() + 1; // JavaScript months are 0-indexed
 
-        const workoutsForMonth = await WorkoutService.getWorkoutsForMonth(year, month);
+        const workoutsForMonth = await WorkoutService.getWorkoutsForMonth(
+          year,
+          month,
+        );
 
         // map the days to numbers of workouts
         const workourCounts = workoutsForMonth.reduce((acc, day) => {
@@ -39,13 +42,12 @@ function WorkoutCalendar() {
   }, [activeStartDate]); // make sure to add dependency so that it refreshes when user changes month
 
   // this function should have various shades of purple based on the count
-    const getTileColor = (count) => {
-      if (count >= 4) return "#9d14ff";
-      if (count >= 2) return "#6e18a8";
-      if (count > 0) return "#38035c";
-      return "#1b1b38";
-    };
-
+  const getTileColor = (count) => {
+    if (count >= 4) return "#9d14ff";
+    if (count >= 2) return "#6e18a8";
+    if (count > 0) return "#38035c";
+    return "#1b1b38";
+  };
 
   const tileContent = ({ date, view }) => {
     // calendar has other views, only render for months
@@ -72,13 +74,13 @@ function WorkoutCalendar() {
   // here in case side effects are needed later or in case validation needs to happen
   // otherwise could use setter directly.
   const onActiveDateChange = ({ newActiveDate }) => {
-    setActiveStartDate(newActiveDate)
-  }
+    setActiveStartDate(newActiveDate);
+  };
 
   const handleDateClick = (date) => {
     const formattedDate = date.toISOString().split("T")[0]; // Format to YYYY-MM-DD
     navigate(`/calendar/${formattedDate}`);
-  }
+  };
 
   return (
     <div>

@@ -26,7 +26,7 @@ function DateDetail() {
     };
 
     fetchWorkouts();
-  }, []);
+  }, [date]);
 
   return (
     <div className="container">
