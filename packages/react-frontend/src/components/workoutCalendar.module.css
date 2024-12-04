@@ -47,3 +47,9 @@
 :global(.react-calendar__tile--now) {
   background-color: #0c0c18 !important; /* Dark background for the current date */
 }
+
+:global(.react-calendar__tile--active) {
+  background-color: transparent !important;
+  color: inherit !important;
+  box-shadow: none !important;
+}
