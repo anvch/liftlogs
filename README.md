@@ -21,5 +21,12 @@ The initial concept for LiftLogs was to create a mobile application that gamifie
 - [API Documentation](./docs/api.md)
 
 ---
+## UI Prototype
 
+Figma Link: https://www.figma.com/design/eMlYWPG5W0BVjYwgiAD2GQ/Lo-fi-Prototype?node-id=0-1 
+
+## UML Diagram (Data Model)
+![B drawio](https://github.com/user-attachments/assets/4836ea17-2761-4f72-868f-edba59244988)
+
+## Flow diagram for authentication
 ![Flow diagram for authentication](https://github.com/user-attachments/assets/727acdcc-3786-4ea6-964b-c8e46aebb24f)
